@@ -6,8 +6,13 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		2E74305A3068405600D4B32F /* NatureIllustrationLogApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E7430593068405600D4B32F /* NatureIllustrationLogApp.swift */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXFileReference section */
 		2E74303030683EE500D4B32F /* NatureIllustrationLog.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = NatureIllustrationLog.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		2E7430593068405600D4B32F /* NatureIllustrationLogApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NatureIllustrationLogApp.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
@@ -33,6 +38,7 @@
 			isa = PBXGroup;
 			children = (
 				2E74303230683EE500D4B32F /* NatureIllustrationLog */,
+				2E7430593068405600D4B32F /* NatureIllustrationLogApp.swift */,
 				2E74303130683EE500D4B32F /* Products */,
 			);
 			sourceTree = "<group>";
@@ -119,6 +125,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				2E74305A3068405600D4B32F /* NatureIllustrationLogApp.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -256,6 +263,7 @@
 				DEVELOPMENT_TEAM = QRX7D8367M;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "Used to read the date and location of photos you add to your nature log.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -288,6 +296,7 @@
 				DEVELOPMENT_TEAM = QRX7D8367M;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "Used to read the date and location of photos you add to your nature log.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
