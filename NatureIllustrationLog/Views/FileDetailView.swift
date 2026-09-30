@@ -4,6 +4,7 @@ import SwiftUI
 struct FileDetailView: View {
     @Bindable var file: SubjectFile
     @Environment(NavigationCoordinator.self) private var coordinator
+    @State private var isEditingLocation = false
 
     var body: some View {
         ScrollView {
@@ -45,20 +46,44 @@ struct FileDetailView: View {
                 }
             }
         }
-        // Field/illustration notes save automatically as the user types —
+        .sheet(isPresented: $isEditingLocation) {
+            LocationPickerView(initialCoordinate: currentCoordinate) { newCoordinate in
+                file.latitude = newCoordinate.latitude
+                file.longitude = newCoordinate.longitude
+                file.locationDescription = nil
+                Task {
+                    let description = await reverseGeocode(
+                        latitude: newCoordinate.latitude,
+                        longitude: newCoordinate.longitude
+                    )
+                    // Ignore the result if the location was changed again meanwhile.
+                    if file.latitude == newCoordinate.latitude,
+                       file.longitude == newCoordinate.longitude {
+                        file.locationDescription = description
+                    }
+                }
+            }
+        }
+        // Field/illustration notes and location save automatically —
         // SwiftData autosaves changes to the model context, so no separate
         // Save button is needed on this screen.
     }
 
+    private var currentCoordinate: CLLocationCoordinate2D? {
+        guard let latitude = file.latitude, let longitude = file.longitude else { return nil }
+        return CLLocationCoordinate2D(latitude: latitude, longitude: longitude)
+    }
+
     @ViewBuilder
     private var locationSection: some View {
-        if let latitude = file.latitude, let longitude = file.longitude {
-            let coordinate = CLLocationCoordinate2D(latitude: latitude, longitude: longitude)
+        if let coordinate = currentCoordinate {
             Map(initialPosition: .region(
                 MKCoordinateRegion(center: coordinate, span: MKCoordinateSpan(latitudeDelta: 0.05, longitudeDelta: 0.05))
             )) {
                 Marker(file.name, coordinate: coordinate)
             }
+            // Recreate the map when the pin moves so it re-centers on the new spot.
+            .id("\(coordinate.latitude),\(coordinate.longitude)")
             .frame(height: 200)
             .clipShape(RoundedRectangle(cornerRadius: 12))
 
@@ -67,10 +92,22 @@ struct FileDetailView: View {
                     .font(.subheadline)
                     .foregroundStyle(.secondary)
             }
+
+            Button {
+                isEditingLocation = true
+            } label: {
+                Label("Edit Location", systemImage: "mappin.and.ellipse")
+            }
         } else {
-            Text("No location data available for this photo.")
+            Text("No location recorded for this photo.")
                 .font(.subheadline)
                 .foregroundStyle(.secondary)
+
+            Button {
+                isEditingLocation = true
+            } label: {
+                Label("Record Photo Location", systemImage: "mappin.and.ellipse")
+            }
         }
     }
 
