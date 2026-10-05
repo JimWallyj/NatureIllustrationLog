@@ -21,19 +21,20 @@ struct EditHomeView: View {
             }
             .navigationTitle("Edit Home")
             .navigationBarTitleDisplayMode(.inline)
+            .navigationBarBackButtonHidden(true)
             .toolbar {
-                ToolbarItem(placement: .topBarTrailing) {
+                ToolbarItem(placement: .topBarLeading) {
                     Button {
                         dismiss()
                     } label: {
-                        Image(systemName: "house")
+                        Image(systemName: "chevron.left")
                     }
                 }
             }
             .sheet(isPresented: $isPickingPhoto) {
                 PhotoAssetPicker { photo in
                     isPickingPhoto = false
-                    if let filename = HomeBackgroundStore.save(photo.image) {
+                    if let filename = HomeBackgroundStore.replace(photo.image, previousFilename: backgroundFilename) {
                         backgroundFilename = filename
                     }
                 }

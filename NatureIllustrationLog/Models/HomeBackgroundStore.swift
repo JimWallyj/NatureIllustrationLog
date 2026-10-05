@@ -11,7 +11,7 @@ enum HomeBackgroundStore {
     }
 
     @discardableResult
-    static func save(_ image: UIImage) -> String? {
+    private static func save(_ image: UIImage) -> String? {
         guard let data = image.jpegData(compressionQuality: 0.9) else { return nil }
         let filename = "home-background-\(Int(Date().timeIntervalSince1970)).jpg"
         do {
@@ -20,5 +20,16 @@ enum HomeBackgroundStore {
         } catch {
             return nil
         }
+    }
+
+    /// Saves a new background and removes the previous one from disk, so old
+    /// backgrounds don't accumulate every time the user changes it.
+    @discardableResult
+    static func replace(_ image: UIImage, previousFilename: String?) -> String? {
+        guard let newFilename = save(image) else { return nil }
+        if let previousFilename, !previousFilename.isEmpty {
+            try? FileManager.default.removeItem(at: url(for: previousFilename))
+        }
+        return newFilename
     }
 }

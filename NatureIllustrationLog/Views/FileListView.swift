@@ -6,6 +6,7 @@ struct FileListView: View {
     @Environment(NavigationCoordinator.self) private var coordinator
     @Query(sort: \SubjectFile.name) private var files: [SubjectFile]
     @State private var showingAddFile = false
+    @State private var pendingDeleteFile: SubjectFile?
 
     var body: some View {
         List {
@@ -16,8 +17,14 @@ struct FileListView: View {
                         Text(file.name)
                     }
                 }
+                .swipeActions {
+                    Button(role: .destructive) {
+                        pendingDeleteFile = file
+                    } label: {
+                        Label("Delete", systemImage: "trash")
+                    }
+                }
             }
-            .onDelete(perform: delete)
         }
         .overlay {
             if files.isEmpty {
@@ -29,6 +36,7 @@ struct FileListView: View {
             }
         }
         .navigationTitle("Illustration Projects")
+        .navigationBarBackButtonHidden(true)
         .toolbar {
             ToolbarItem(placement: .topBarLeading) {
                 Button {
@@ -48,6 +56,28 @@ struct FileListView: View {
         .sheet(isPresented: $showingAddFile) {
             AddFileView()
         }
+        .confirmationDialog(
+            "Delete \"\(pendingDeleteFile?.name ?? "")\"?",
+            isPresented: Binding(
+                get: { pendingDeleteFile != nil },
+                set: { isPresented in
+                    if !isPresented { pendingDeleteFile = nil }
+                }
+            ),
+            titleVisibility: .visible
+        ) {
+            Button("Delete", role: .destructive) {
+                if let file = pendingDeleteFile {
+                    modelContext.delete(file)
+                }
+                pendingDeleteFile = nil
+            }
+            Button("Cancel", role: .cancel) {
+                pendingDeleteFile = nil
+            }
+        } message: {
+            Text("This removes the photo and notes for this file. This can't be undone.")
+        }
     }
 
     private func thumbnail(for file: SubjectFile) -> some View {
@@ -63,12 +93,6 @@ struct FileListView: View {
                     .fill(.quaternary)
                     .frame(width: 44, height: 44)
             }
-        }
-    }
-
-    private func delete(at offsets: IndexSet) {
-        for index in offsets {
-            modelContext.delete(files[index])
         }
     }
 }

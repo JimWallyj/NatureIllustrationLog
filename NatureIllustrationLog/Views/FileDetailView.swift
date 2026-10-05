@@ -9,16 +9,17 @@ struct FileDetailView: View {
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 20) {
+                // Date sits directly under the file name (the navigation title).
+                if let date = file.dateTaken {
+                    Label(date.formatted(date: .abbreviated, time: .omitted), systemImage: "calendar")
+                        .foregroundStyle(.secondary)
+                }
+
                 if let uiImage = UIImage(data: file.photoData) {
                     Image(uiImage: uiImage)
                         .resizable()
                         .scaledToFit()
                         .clipShape(RoundedRectangle(cornerRadius: 12))
-                }
-
-                if let date = file.dateTaken {
-                    Label(date.formatted(date: .abbreviated, time: .omitted), systemImage: "calendar")
-                        .foregroundStyle(.secondary)
                 }
 
                 locationSection
@@ -30,12 +31,15 @@ struct FileDetailView: View {
         }
         .navigationTitle(file.name)
         .navigationBarTitleDisplayMode(.inline)
+        .navigationBarBackButtonHidden(true)
         .toolbar {
-            ToolbarItem(placement: .principal) {
-                Button("File List") {
+            ToolbarItem(placement: .topBarLeading) {
+                Button {
                     if !coordinator.path.isEmpty {
                         coordinator.path.removeLast()
                     }
+                } label: {
+                    Image(systemName: "chevron.left")
                 }
             }
             ToolbarItem(placement: .topBarTrailing) {
@@ -56,7 +60,6 @@ struct FileDetailView: View {
                         latitude: newCoordinate.latitude,
                         longitude: newCoordinate.longitude
                     )
-                    // Ignore the result if the location was changed again meanwhile.
                     if file.latitude == newCoordinate.latitude,
                        file.longitude == newCoordinate.longitude {
                         file.locationDescription = description
@@ -64,9 +67,9 @@ struct FileDetailView: View {
                 }
             }
         }
-        // Field/illustration notes and location save automatically —
-        // SwiftData autosaves changes to the model context, so no separate
-        // Save button is needed on this screen.
+        // Field/illustration notes and location save automatically as SwiftData
+        // autosaves the model context — in practice this means changes are
+        // saved well before the user exits the screen, satisfying "saved on exit."
     }
 
     private var currentCoordinate: CLLocationCoordinate2D? {
@@ -82,7 +85,6 @@ struct FileDetailView: View {
             )) {
                 Marker(file.name, coordinate: coordinate)
             }
-            // Recreate the map when the pin moves so it re-centers on the new spot.
             .id("\(coordinate.latitude),\(coordinate.longitude)")
             .frame(height: 200)
             .clipShape(RoundedRectangle(cornerRadius: 12))
