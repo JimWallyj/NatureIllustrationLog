@@ -27,6 +27,11 @@ final class SubjectFile {
     var fieldNotes: String
     var illustrationNotes: String
 
+    /// The finished (or in-progress) illustration photo, added later from the
+    /// File Screen — separate from the original nature-subject photo above.
+    @Attribute(.externalStorage) var illustrationPhotoData: Data?
+    var illustrationPhotoDate: Date?
+
     init(
         name: String,
         photoData: Data,
@@ -35,7 +40,9 @@ final class SubjectFile {
         longitude: Double?,
         locationDescription: String?,
         fieldNotes: String = "",
-        illustrationNotes: String = ""
+        illustrationNotes: String = "",
+        illustrationPhotoData: Data? = nil,
+        illustrationPhotoDate: Date? = nil
     ) {
         self.name = name
         self.photoData = photoData
@@ -46,5 +53,7 @@ final class SubjectFile {
         self.locationDescription = locationDescription
         self.fieldNotes = fieldNotes
         self.illustrationNotes = illustrationNotes
+        self.illustrationPhotoData = illustrationPhotoData
+        self.illustrationPhotoDate = illustrationPhotoDate
     }
 }

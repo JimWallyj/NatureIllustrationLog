@@ -5,6 +5,10 @@ struct FileDetailView: View {
     @Bindable var file: SubjectFile
     @Environment(NavigationCoordinator.self) private var coordinator
     @State private var isEditingLocation = false
+    @State private var isPickingIllustrationPhoto = false
+    @State private var showingFullPhoto = false
+    @State private var showingFullMap = false
+    @State private var showingFullIllustrationPhoto = false
 
     var body: some View {
         ScrollView {
@@ -20,11 +24,18 @@ struct FileDetailView: View {
                         .resizable()
                         .scaledToFit()
                         .clipShape(RoundedRectangle(cornerRadius: 12))
+                        .onTapGesture { showingFullPhoto = true }
+                        .fullScreenCover(isPresented: $showingFullPhoto) {
+                            FullPhotoView(image: uiImage)
+                        }
                 }
 
                 locationSection
 
                 notesSection(title: "Field Notes", text: $file.fieldNotes)
+
+                illustrationPhotoSection
+
                 notesSection(title: "Illustration Project Notes", text: $file.illustrationNotes)
             }
             .padding()
@@ -67,6 +78,13 @@ struct FileDetailView: View {
                 }
             }
         }
+        .sheet(isPresented: $isPickingIllustrationPhoto) {
+            PhotoAssetPicker { photo in
+                isPickingIllustrationPhoto = false
+                file.illustrationPhotoData = photo.image.jpegData(compressionQuality: 0.9)
+                file.illustrationPhotoDate = photo.dateTaken
+            }
+        }
         // Field/illustration notes and location save automatically as SwiftData
         // autosaves the model context — in practice this means changes are
         // saved well before the user exits the screen, satisfying "saved on exit."
@@ -88,6 +106,10 @@ struct FileDetailView: View {
             .id("\(coordinate.latitude),\(coordinate.longitude)")
             .frame(height: 200)
             .clipShape(RoundedRectangle(cornerRadius: 12))
+            .onTapGesture { showingFullMap = true }
+            .fullScreenCover(isPresented: $showingFullMap) {
+                FullMapView(coordinate: coordinate, title: file.name)
+            }
 
             if let description = file.locationDescription {
                 Text(description)
@@ -109,6 +131,49 @@ struct FileDetailView: View {
                 isEditingLocation = true
             } label: {
                 Label("Record Photo Location", systemImage: "mappin.and.ellipse")
+            }
+        }
+    }
+
+    @ViewBuilder
+    private var illustrationPhotoSection: some View {
+        VStack(alignment: .leading, spacing: 6) {
+            Text("Illustration Project Photo").font(.headline)
+
+            if let data = file.illustrationPhotoData, let illustrationImage = UIImage(data: data) {
+                Image(uiImage: illustrationImage)
+                    .resizable()
+                    .scaledToFit()
+                    .clipShape(RoundedRectangle(cornerRadius: 12))
+                    .onTapGesture { showingFullIllustrationPhoto = true }
+                    .fullScreenCover(isPresented: $showingFullIllustrationPhoto) {
+                        FullPhotoView(image: illustrationImage)
+                    }
+
+                if let date = file.illustrationPhotoDate {
+                    Label(date.formatted(date: .abbreviated, time: .omitted), systemImage: "calendar")
+                        .foregroundStyle(.secondary)
+                } else {
+                    DatePicker(
+                        "Date",
+                        selection: Binding(
+                            get: { file.illustrationPhotoDate ?? Date() },
+                            set: { file.illustrationPhotoDate = $0 }
+                        ),
+                        displayedComponents: .date
+                    )
+                }
+
+                Button("Replace Photo") {
+                    isPickingIllustrationPhoto = true
+                }
+                .font(.footnote)
+            } else {
+                Button {
+                    isPickingIllustrationPhoto = true
+                } label: {
+                    Label("Add Illustration Photo", systemImage: "paintpalette")
+                }
             }
         }
     }

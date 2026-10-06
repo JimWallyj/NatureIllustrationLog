@@ -2,7 +2,7 @@
 ## Nature Illustration Log and Locator
 
 ### 1. Overview
-**Purpose / problem statement:** The Nature Illustration Log and Locator app provides a simple tool for nature illustrators to capture a source photo and basic details in the field on their device. The resulting repository should prove useful to the nature illustrator for their next illustration project. The illustrator user will import their nature subject from the Photos app. The file entries in this Nature Illustration Log & Locator app will include the photo, date taken, user field notes, and initial notes and plans that support the user's illustration project. The illustration project is not part of this SwiftUI program. The SwiftUI program merely stores a picture of the nature subject and related user notes.
+**Purpose / problem statement:** The Nature Illustration Log and Locator app provides a simple tool for nature illustrators to capture a source photo and basic details in the field on their device. The resulting repository should prove useful to the nature illustrator for their next illustration project. The illustrator user will import their nature subject from the Photos app. The file entries in this Nature Illustration Log & Locator app will include the photo, date taken, user field notes, and initial notes and plans that support the user's illustration project. The illustration project is not part of this app. The app merely stores a picture of the nature subject and related user notes.
 
 **Target user:** Nature illustrators
 
@@ -55,19 +55,37 @@
   - a. '<' sign in the top left corner to return to the File List Screen
   - b. Home button in the top right corner to return to the Home Screen
   - c. Edit Location link takes the user to the Photo Location Selection screen
-- **UI elements:** See 'a' through 'c', above
+  - d. Tapping the photo takes the user to Full Photo View
+  - e. Tapping the map takes the user to Full Map View
+- **UI elements:** See 'a' through 'e', above
 - **Data displayed & source:**
   - a. File Name = located top center
-  - b. Date in which the photo was taken = located just below the File Name
-  - c. Large photo of the photo the user selected for this nature subject
-  - d. Location of photo pinned in Apple maps view
+  - b. Date in which the photo was taken = located just above left of photo
+  - c. Large photo of the photo the user selected for this nature subject (tappable — opens Full Photo View)
+  - d. Location of photo pinned in Apple maps view (tappable — opens Full Map View)
   - e. Under the location map view resides a link to the Photo Location Selection Screen, named "Edit Location" (or "Record Photo Location" if no location has been set yet)
   - f. Editable text box with user field notes
-  - g. Editable text box with initial notes and plans for the user's illustration project
+  - g. Illustration Project Photo — a second photo and date, for the finished (or in-progress) illustration, located just above the Illustration Project Notes textbox and label. Same auto-fill/manual date behavior as the original photo. Also tappable — opens Full Photo View.
+  - h. Editable text box with initial notes and plans for the user's illustration project
 - **User actions & resulting behavior:**
   - a. '<' sign in the top left corner returns to the File List Screen
   - b. Home button in the top right corner returns to the Home Screen
   - c. Ability to edit text fields and location. Changes save automatically as the user types/edits — autosave is sufficient; no separate Save button is needed on this screen.
+  - d. Tapping the photo or the map opens their respective full-screen views
+
+#### Screen: Full Photo View
+- **Entry points:** Tapping the original photo or the Illustration Project Photo on the File Screen
+- **Exit points:** '<' icon in the top left corner returns to the previous screen
+- **UI elements:** The photo, shown full screen. Not editable from this screen.
+- **User actions & resulting behavior:** See above.
+
+#### Screen: Full Map View
+- **Entry points:** Tapping the map on the File Screen
+- **Exit points:** '<' icon in the top left corner returns to the previous screen
+- **UI elements:**
+  - Map and Satellite buttons on the bottom to change the map view
+  - The pinned location, shown full screen. The pin is not editable from this screen.
+- **User actions & resulting behavior:** Map and Satellite buttons change the map style. See above for exit.
 
 #### Screen: Add File
 - **Entry points:** User clicks the plus sign in the Home Screen or in the File List Screen.
@@ -77,20 +95,20 @@
   - c. "Record Photo Location" link which takes the user to the Location Picker screen
 - **UI elements:**
   - a. See 'a' through 'c', above
-  - b. Textbox for the file name. Label is "Subject File Name"
-  - c. Photo Date field, "Date of Photo" — auto-filled from the photo's metadata when available; if not available (denied Photos access, or a camera that doesn't record it), the user can enter it by hand. Leaving it blank is allowed.
-  - d. Textbox for user field notes, "Field Notes"
-  - e. Textbox for initial notes and plans for the user's illustration project, "Illustration Project Notes"
+  - b. Textbox for the file name. Textbox label is named "Subject File Name"
+  - c. Photo Date field, "Date of Photo" — auto-filled from the photo's metadata when available, once the photo is selected; if not available (denied Photos access, or a camera that doesn't record it), the user can enter it by hand. Leaving it blank is allowed.
+  - d. Textbox for user field notes with its title is named "Field Notes"
+  - e. Textbox for initial notes and plans for the user's illustration project with its title named "Illustration Project Notes"
 - **User actions & resulting behavior:**
   - a. Cancel button in the top left corner returns to whichever screen Add File was opened from
   - b. Text label located top center, named "Add File"
   - c. Save button in the top right corner saves the file. Disabled until both a photo and a file name are provided.
   - d. "Record Photo Location" link takes the user to the map page
   - e. Once the user has saved a pinned location from the Photo Location Selection Screen, the map and pin appear here in the Add File screen, with an "Edit Location" link underneath to change it (consistent with File Screen)
-  - f. Textbox for the file name, label "Subject File Name"
+  - f. Textbox for the file name, with label "Subject File Name"
   - g. Photo Date field, "Date of Photo" — auto-fills when available from Photos metadata; otherwise the user enters it, or leaves it blank
-  - h. Textbox for user field notes, "Field Notes"
-  - i. Textbox for initial notes and plans for the user's illustration project, "Illustration Project Notes"
+  - h. Textbox for user field notes, with label "Field Notes"
+  - i. Textbox for initial notes and plans for the user's illustration project, with label "Illustration Project Notes"
 
 #### Screen: Edit Home
 - **Entry points:** User clicks the gear sign in the top right corner of the Home screen
@@ -126,6 +144,8 @@
   | locationDescription | Text | No | A short place name (e.g. "Sedona, AZ") looked up from the pinned location |
   | fieldNotes | Text | No | Freeform notes from the field |
   | illustrationNotes | Text | No | Freeform notes and plans for the illustration project |
+  | illustrationPhoto | Image | No | The finished (or in-progress) illustration photo, added separately from the File Screen |
+  | illustrationPhotoDate | Date | No | Auto-read from the illustration photo's metadata when available; entered manually as a fallback |
 
 - **Relationships between entities:** Not applicable — the app has a single entity with no relationships to other data.
 - **Persistence across launches:** All of the above is stored on-device and persists across app launches and restarts. (The Home screen's background photo is a separate, simpler piece of app-wide settings — not part of this entity — also stored on-device and persisting across launches.)
@@ -165,6 +185,18 @@
 - **Expected behavior:** the photo becomes the Home screen background, filling the area below the icon bar. The icon bar stays visible for any photo. The choice persists across launches.
 - **Edge cases:** photos with any size or aspect ratio, and rotation between portrait and landscape.
 - **Error handling:** if the saved image can't be loaded, the Home screen falls back to the default gradient. Old backgrounds are cleaned up automatically when replaced.
+
+**Feature: Illustration Project Photo**
+- **Inputs:** a photo chosen from the Photos app, from the File Screen.
+- **Expected behavior:** the photo and its date appear on the File Screen, just above the Illustration Project Notes textbox. Date behavior matches the original photo — auto-fills from metadata when available, otherwise the user can enter it by hand. The photo can be replaced later.
+- **Edge cases:** no illustration photo yet: the File Screen shows an "Add Illustration Photo" prompt instead. Illustration photo has no date: the date field is left for manual entry.
+- **Error handling:** if metadata can't be read, the photo still saves with no date filled in.
+
+**Feature: Full Photo View and Full Map View**
+- **Inputs:** tapping the original photo, the Illustration Project Photo, or the map on the File Screen.
+- **Expected behavior:** each opens a full-screen, read-only view of that photo or map, with a '<' button to return. Full Map View includes the Map/Satellite toggle but the pin can't be moved from there.
+- **Edge cases:** none.
+- **Error handling:** none needed.
 
 **Feature: Manual Location Pin**
 - **Inputs:** a location the user sets by hand on a map.
