@@ -6,6 +6,7 @@ struct FileDetailView: View {
     @Environment(NavigationCoordinator.self) private var coordinator
     @State private var isEditingLocation = false
     @State private var isPickingIllustrationPhoto = false
+    @State private var isPickingReplacementPhoto = false
     @State private var showingFullPhoto = false
     @State private var showingFullMap = false
     @State private var showingFullIllustrationPhoto = false
@@ -17,6 +18,15 @@ struct FileDetailView: View {
                 if let date = file.dateTaken {
                     Label(date.formatted(date: .abbreviated, time: .omitted), systemImage: "calendar")
                         .foregroundStyle(.secondary)
+                } else {
+                    DatePicker(
+                        "Date",
+                        selection: Binding(
+                            get: { file.dateTaken ?? Date() },
+                            set: { file.dateTaken = $0 }
+                        ),
+                        displayedComponents: .date
+                    )
                 }
 
                 if let uiImage = UIImage(data: file.photoData) {
@@ -28,6 +38,11 @@ struct FileDetailView: View {
                         .fullScreenCover(isPresented: $showingFullPhoto) {
                             FullPhotoView(image: uiImage)
                         }
+
+                    Button("Replace Photo") {
+                        isPickingReplacementPhoto = true
+                    }
+                    .font(.footnote)
                 }
 
                 locationSection
@@ -83,6 +98,19 @@ struct FileDetailView: View {
                 isPickingIllustrationPhoto = false
                 file.illustrationPhotoData = photo.image.jpegData(compressionQuality: 0.9)
                 file.illustrationPhotoDate = photo.dateTaken
+            }
+        }
+        .sheet(isPresented: $isPickingReplacementPhoto) {
+            PhotoAssetPicker { photo in
+                isPickingReplacementPhoto = false
+                if let data = photo.image.jpegData(compressionQuality: 0.9) {
+                    file.photoData = data
+                }
+                // Keep the existing date if the new photo has none of its own,
+                // rather than silently clearing a date the user may have set by hand.
+                if let newDate = photo.dateTaken {
+                    file.dateTaken = newDate
+                }
             }
         }
         // Field/illustration notes and location save automatically as SwiftData
@@ -178,7 +206,7 @@ struct FileDetailView: View {
         }
     }
 
-    private func notesSection(title: String, text: Binding<String>) -> some View {
+    private func notesSection(title: LocalizedStringKey, text: Binding<String>) -> some View {
         VStack(alignment: .leading, spacing: 6) {
             Text(title).font(.headline)
             TextEditor(text: text)

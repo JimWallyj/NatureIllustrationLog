@@ -104,12 +104,16 @@ struct LocationPickerView: View {
                             .multilineTextAlignment(.center)
                     }
 
-                    Text(selection == nil
-                         ? "Pinch to zoom, then tap the map to drop a pin on the photo location."
-                         : "Tap the map again to move the pin.")
-                        .font(.footnote)
-                        .foregroundStyle(.secondary)
-                        .multilineTextAlignment(.center)
+                    Group {
+                        if selection == nil {
+                            Text("Pinch to zoom, then tap the map to drop a pin on the photo location.")
+                        } else {
+                            Text("Tap the map again to move the pin.")
+                        }
+                    }
+                    .font(.footnote)
+                    .foregroundStyle(.secondary)
+                    .multilineTextAlignment(.center)
                 }
                 .padding()
                 .background(.regularMaterial)
@@ -160,10 +164,10 @@ struct LocationPickerView: View {
                     )
                 )
             } else {
-                searchMessage = "No places found for \"\(query)\"."
+                searchMessage = String(localized: "No places found for \"\(query)\".")
             }
         } catch {
-            searchMessage = "Search failed. Check your connection and try again."
+            searchMessage = String(localized: "Search failed. Check your connection and try again.")
         }
     }
 }

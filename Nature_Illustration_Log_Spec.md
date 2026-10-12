@@ -60,8 +60,8 @@
 - **UI elements:** See 'a' through 'e', above
 - **Data displayed & source:**
   - a. File Name = located top center
-  - b. Date in which the photo was taken = located just above left of photo
-  - c. Large photo of the photo the user selected for this nature subject (tappable — opens Full Photo View)
+  - b. Date in which the photo was taken = located just above left of photo. If no date is available, a date field appears here instead so the user can enter it by hand.
+  - c. Large photo of the photo the user selected for this nature subject (tappable — opens Full Photo View), with a "Replace Photo" link underneath to change it
   - d. Location of photo pinned in Apple maps view (tappable — opens Full Map View)
   - e. Under the location map view resides a link to the Photo Location Selection Screen, named "Edit Location" (or "Record Photo Location" if no location has been set yet)
   - f. Editable text box with user field notes
@@ -72,6 +72,7 @@
   - b. Home button in the top right corner returns to the Home Screen
   - c. Ability to edit text fields and location. Changes save automatically as the user types/edits — autosave is sufficient; no separate Save button is needed on this screen.
   - d. Tapping the photo or the map opens their respective full-screen views
+  - e. "Replace Photo" link under the original photo lets the user choose a different photo. The date updates automatically if the new photo has its own metadata date; otherwise the existing date is kept.
 
 #### Screen: Full Photo View
 - **Entry points:** Tapping the original photo or the Illustration Project Photo on the File Screen
@@ -138,7 +139,7 @@
   |---|---|---|---|
   | name | Text | Yes | The "Subject File Name"; must be unique (case-insensitive) |
   | photo | Image | Yes | Copied into the app's own storage at Add time |
-  | dateTaken | Date | No | Auto-read from the photo's metadata when available; entered manually as a fallback |
+  | dateTaken | Date | No | Auto-read from the photo's metadata when available; entered manually as a fallback (a date field appears on the File Screen whenever this is empty) |
   | dateAdded | Date | Yes | When the entry was created in the app (tracked internally; not shown on screen) |
   | latitude / longitude | Location | No | Set by the user pinning a location on the map; absent until they do |
   | locationDescription | Text | No | A short place name (e.g. "Sedona, AZ") looked up from the pinned location |
@@ -185,6 +186,12 @@
 - **Expected behavior:** the photo becomes the Home screen background, filling the area below the icon bar. The icon bar stays visible for any photo. The choice persists across launches.
 - **Edge cases:** photos with any size or aspect ratio, and rotation between portrait and landscape.
 - **Error handling:** if the saved image can't be loaded, the Home screen falls back to the default gradient. Old backgrounds are cleaned up automatically when replaced.
+
+**Feature: Replace Photo**
+- **Inputs:** a different photo chosen from the Photos app, from the File Screen.
+- **Expected behavior:** the original photo is replaced in the app's storage. If the new photo has its own metadata date, the file's date updates to match; otherwise the existing date is left as-is.
+- **Edge cases:** the file's date was empty before replacing: stays empty unless the new photo supplies one, in which case the user can also set it by hand (the same manual date field now available for the original photo whenever no date is present).
+- **Error handling:** if the new photo's metadata can't be read, the photo still updates and the existing date is preserved.
 
 **Feature: Illustration Project Photo**
 - **Inputs:** a photo chosen from the Photos app, from the File Screen.
@@ -247,6 +254,8 @@
 - Swipe to delete removes the file. A confirmation message appears before the delete completes.
 - The '<' button returns to File List, and the Home button returns to Home from both screens.
 - Edited notes and location are still there after leaving the screen and after quitting the app.
+- Replace Photo updates the stored photo; the date updates only when the new photo has its own metadata date.
+- A photo (original or illustration) with no date shows a date field, and a manually entered date is still there after leaving the screen and after quitting the app.
 
 *Permissions*
 - First launch shows the Photos access prompt.
