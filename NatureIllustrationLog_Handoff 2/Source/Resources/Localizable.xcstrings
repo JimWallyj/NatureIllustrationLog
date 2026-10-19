@@ -1,0 +1,526 @@
+{
+  "sourceLanguage": "en",
+  "strings": {
+    "Illustration Projects": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Proyectos de ilustración"
+          }
+        }
+      }
+    },
+    "Change Background": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cambiar fondo"
+          }
+        }
+      }
+    },
+    "Edit Home": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Editar pantalla de inicio"
+          }
+        }
+      }
+    },
+    "No Files Yet": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Aún no hay archivos"
+          }
+        }
+      }
+    },
+    "Tap + to add your first nature subject.": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Toca + para agregar tu primer sujeto de la naturaleza."
+          }
+        }
+      }
+    },
+    "Delete": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Eliminar"
+          }
+        }
+      }
+    },
+    "Cancel": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cancelar"
+          }
+        }
+      }
+    },
+    "Delete \"%@\"?": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "¿Eliminar \"%@\"?"
+          }
+        }
+      }
+    },
+    "This removes the photo and notes for this file. This can't be undone.": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Esto elimina la foto y las notas de este archivo. Esta acción no se puede deshacer."
+          }
+        }
+      }
+    },
+    "Photo Date": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Fecha de la foto"
+          }
+        }
+      }
+    },
+    "Date Taken": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Fecha de captura"
+          }
+        }
+      }
+    },
+    "Date": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Fecha"
+          }
+        }
+      }
+    },
+    "Photo Location": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ubicación de la foto"
+          }
+        }
+      }
+    },
+    "Record Photo Location": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Registrar ubicación de la foto"
+          }
+        }
+      }
+    },
+    "Edit Location": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Editar ubicación"
+          }
+        }
+      }
+    },
+    "Subject File Name": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nombre del archivo del sujeto"
+          }
+        }
+      }
+    },
+    "Name": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nombre"
+          }
+        }
+      }
+    },
+    "Field Notes": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Notas de campo"
+          }
+        }
+      }
+    },
+    "Illustration Project Notes": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Notas del proyecto de ilustración"
+          }
+        }
+      }
+    },
+    "Add File": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Agregar archivo"
+          }
+        }
+      }
+    },
+    "Save": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Guardar"
+          }
+        }
+      }
+    },
+    "File Exists": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "El archivo ya existe"
+          }
+        }
+      }
+    },
+    "OK": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "OK"
+          }
+        }
+      }
+    },
+    "A file named \"%@\" already exists. Please choose a unique name.": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ya existe un archivo llamado \"%@\". Elige un nombre diferente."
+          }
+        }
+      }
+    },
+    "Photo Access Not Available": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Acceso a Fotos no disponible"
+          }
+        }
+      }
+    },
+    "Open Settings": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Abrir Ajustes"
+          }
+        }
+      }
+    },
+    "Continue Anyway": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Continuar de todos modos"
+          }
+        }
+      }
+    },
+    "Without Photos access, the date taken can't be filled in automatically — you can still add a photo and enter the date by hand.": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sin acceso a Fotos, la fecha de la foto no se puede completar automáticamente; aún puedes agregar una foto e ingresar la fecha manualmente."
+          }
+        }
+      }
+    },
+    "Search for a place": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Buscar un lugar"
+          }
+        }
+      }
+    },
+    "Map Style": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Estilo de mapa"
+          }
+        }
+      }
+    },
+    "Map": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mapa"
+          }
+        }
+      }
+    },
+    "Satellite": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Satélite"
+          }
+        }
+      }
+    },
+    "Pinch to zoom, then tap the map to drop a pin on the photo location.": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pellizca para acercar y luego toca el mapa para colocar un pin en la ubicación de la foto."
+          }
+        }
+      }
+    },
+    "Tap the map again to move the pin.": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Toca el mapa de nuevo para mover el pin."
+          }
+        }
+      }
+    },
+    "Done": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Listo"
+          }
+        }
+      }
+    },
+    "No places found for \"%@\".": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No se encontraron lugares para \"%@\"."
+          }
+        }
+      }
+    },
+    "Search failed. Check your connection and try again.": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "La búsqueda falló. Revisa tu conexión e inténtalo de nuevo."
+          }
+        }
+      }
+    },
+    "No location recorded for this photo.": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No se registró ubicación para esta foto."
+          }
+        }
+      }
+    },
+    "Photos": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Fotos"
+          }
+        }
+      }
+    },
+    "Add Photos": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Agregar fotos"
+          }
+        }
+      }
+    },
+    "Add More Photos": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Agregar más fotos"
+          }
+        }
+      }
+    },
+    "Importing photos…": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Importando fotos…"
+          }
+        }
+      }
+    },
+    "Photos without a date use this date.": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Las fotos sin fecha usarán esta fecha."
+          }
+        }
+      }
+    },
+    "Photo Album (%lld)": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Álbum de fotos (%lld)"
+          }
+        }
+      }
+    },
+    "Illustration Photos": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Fotos de la ilustración"
+          }
+        }
+      }
+    },
+    "No Photos Yet": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Aún no hay fotos"
+          }
+        }
+      }
+    },
+    "Tap + to add photos.": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Toca + para agregar fotos."
+          }
+        }
+      }
+    },
+    "Set as First": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Poner como primera"
+          }
+        }
+      }
+    },
+    "Delete this photo?": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "¿Eliminar esta foto?"
+          }
+        }
+      }
+    },
+    "This can't be undone.": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Esta acción no se puede deshacer."
+          }
+        }
+      }
+    },
+    "Illustration Project Photos": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Fotos del proyecto de ilustración"
+          }
+        }
+      }
+    },
+    "Add Illustration Photos": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Agregar fotos de ilustración"
+          }
+        }
+      }
+    }
+  },
+  "version": "1.0"
+}

@@ -14,25 +14,47 @@ struct CoverPhotoView: View {
     }
 }
 
-/// A photo's date: shown as text when it has one, or as a date picker so the
-/// user can enter it by hand when it doesn't.
+/// A photo's date. Tap the date to change it. A photo with no date yet shows
+/// a labeled date picker so the user can enter one by hand.
 struct PhotoDateRow: View {
     @Bindable var photo: AlbumPhoto
+    /// False for read-only files: the date is shown but can't be changed.
+    var isEditable: Bool = true
 
     var body: some View {
-        if let date = photo.date {
-            Label(date.formatted(date: .abbreviated, time: .omitted), systemImage: "calendar")
-                .foregroundStyle(.secondary)
+        if !isEditable {
+            HStack(spacing: 6) {
+                Image(systemName: "calendar")
+                    .foregroundStyle(.secondary)
+                if let date = photo.date {
+                    Text(date, format: .dateTime.year().month(.abbreviated).day())
+                } else {
+                    Text("No date")
+                        .foregroundStyle(.secondary)
+                }
+                Spacer(minLength: 0)
+            }
+        } else if photo.date != nil {
+            HStack(spacing: 6) {
+                Image(systemName: "calendar")
+                    .foregroundStyle(.secondary)
+                DatePicker("Date", selection: dateBinding, displayedComponents: .date)
+                    .labelsHidden()
+                Spacer(minLength: 0)
+            }
         } else {
-            DatePicker(
-                "Date",
-                selection: Binding(
-                    get: { photo.date ?? Date() },
-                    set: { photo.date = $0 }
-                ),
-                displayedComponents: .date
-            )
+            DatePicker("Date", selection: dateBinding, displayedComponents: .date)
         }
+    }
+
+    private var dateBinding: Binding<Date> {
+        Binding(
+            get: { photo.date ?? Date() },
+            set: {
+                photo.date = $0
+                photo.file?.touch()
+            }
+        )
     }
 }
 

@@ -6,6 +6,8 @@ struct HomeView: View {
     @State private var coordinator = NavigationCoordinator()
     @State private var showingAddFile = false
     @State private var showingEditHome = false
+    @State private var importer = ImportManager()
+    @Environment(\.modelContext) private var modelContext
 
     var body: some View {
         NavigationStack(path: $coordinator.path) {
@@ -29,10 +31,7 @@ struct HomeView: View {
                         Button("Illustration Projects") {
                             coordinator.showFileList()
                         }
-                        .font(.title2.bold())
-                        .padding()
-                        .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 16))
-                        .foregroundStyle(.primary)
+                        .buttonStyle(RaisedButtonStyle(color: .blue, font: .title2.bold()))  // Apple's standard blue
                         
                         Spacer()
                         Spacer()
@@ -52,14 +51,26 @@ struct HomeView: View {
             .sheet(isPresented: $showingAddFile) {
                 AddFileView()
             }
-            .sheet(isPresented: $showingEditHome) {
+            .sheet(isPresented: $showingEditHome, onDismiss: {
+                // Files picked with "Import Files" in Settings start importing here.
+                importer.startPending(in: modelContext)
+            }) {
                 EditHomeView()
             }
             .task {
                 requestPhotoLibraryAccessIfNeeded()
             }
         }
+        // A ".natlog" file opened from AirDrop, Files, Messages, or Mail.
+        .onOpenURL { url in
+            importer.receive([url])
+            importer.startPending(in: modelContext)
+        }
+        .overlay {
+            ImportOverlay(importer: importer)
+        }
         .environment(coordinator)
+        .environment(importer)
     }
 
     private func iconButton(_ systemName: String, action: @escaping () -> Void) -> some View {
@@ -97,7 +108,7 @@ struct HomeView: View {
                 .clipped()
                 .allowsHitTesting(false)
         } else {
-            // Default background until the user sets one via Edit Home.
+            // Default background until the user sets one via Settings.
             LinearGradient(
                 colors: [.green.opacity(0.6), .brown.opacity(0.4)],
                 startPoint: .top,

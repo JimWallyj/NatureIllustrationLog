@@ -1,0 +1,38 @@
+{
+  "sourceLanguage": "en",
+  "strings": {
+    "NSPhotoLibraryUsageDescription": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Used to read the date a photo was taken when you add it to your nature log."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Se usa para leer la fecha en que se tomó una foto cuando la agregas a tu registro de naturaleza."
+          }
+        }
+      }
+    },
+    "NSLocationWhenInUseUsageDescription": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Used to show where you are on the map when you record a photo's location."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Se usa para mostrar dónde estás en el mapa cuando registras la ubicación de una foto."
+          }
+        }
+      }
+    }
+  },
+  "version": "1.0"
+}

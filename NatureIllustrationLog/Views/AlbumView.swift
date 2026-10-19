@@ -28,18 +28,20 @@ struct AlbumView: View {
                     HStack(spacing: 12) {
                         thumbnail(for: photo)
                             .onTapGesture { viewing = ViewerItem(id: index) }
-                        PhotoDateRow(photo: photo)
+                        PhotoDateRow(photo: photo, isEditable: !file.isReadOnly)
                             .frame(maxWidth: .infinity, alignment: .leading)
                     }
                     .swipeActions(edge: .trailing) {
-                        Button(role: .destructive) {
-                            pendingDelete = photo
-                        } label: {
-                            Label("Delete", systemImage: "trash")
+                        if !file.isReadOnly {
+                            Button(role: .destructive) {
+                                pendingDelete = photo
+                            } label: {
+                                Label("Delete", systemImage: "trash")
+                            }
                         }
                     }
                     .swipeActions(edge: .leading) {
-                        if index > 0 {
+                        if index > 0 && !file.isReadOnly {
                             Button {
                                 makeFirst(photo)
                             } label: {
@@ -71,10 +73,12 @@ struct AlbumView: View {
                     }
                 }
                 ToolbarItem(placement: .topBarTrailing) {
-                    Button {
-                        isPickingPhotos = true
-                    } label: {
-                        Image(systemName: "plus")
+                    if !file.isReadOnly {
+                        Button {
+                            isPickingPhotos = true
+                        } label: {
+                            Image(systemName: "plus")
+                        }
                     }
                 }
             }
@@ -107,6 +111,7 @@ struct AlbumView: View {
                 Button("Delete", role: .destructive) {
                     if let photo = pendingDelete {
                         modelContext.delete(photo)
+                        file.touch()
                     }
                     pendingDelete = nil
                 }
@@ -142,5 +147,6 @@ struct AlbumView: View {
     private func makeFirst(_ photo: AlbumPhoto) {
         let lowest = photos.map(\.sortIndex).min() ?? 0
         photo.sortIndex = lowest - 1
+        file.touch()
     }
 }

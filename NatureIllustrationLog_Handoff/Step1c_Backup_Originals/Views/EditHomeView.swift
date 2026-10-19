@@ -1,0 +1,49 @@
+import SwiftUI
+
+/// The Settings screen (formerly "Edit Home"), opened from the gear on Home.
+/// The struct and file keep their original name so no Xcode file changes are needed.
+struct EditHomeView: View {
+    @Environment(\.dismiss) private var dismiss
+    @AppStorage("homeBackgroundFilename") private var backgroundFilename: String = ""
+    @State private var isPickingPhoto = false
+
+    var body: some View {
+        NavigationStack {
+            VStack(spacing: 24) {
+                Spacer()
+                Button("Change Background") {
+                    isPickingPhoto = true
+                }
+                .buttonStyle(RaisedButtonStyle())
+                Spacer()
+            }
+            .frame(maxWidth: .infinity)
+            .navigationTitle("Settings")
+            .navigationBarTitleDisplayMode(.inline)
+            .navigationBarBackButtonHidden(true)
+            .toolbar {
+                ToolbarItem(placement: .topBarLeading) {
+                    Button {
+                        dismiss()
+                    } label: {
+                        Image(systemName: "chevron.left")
+                    }
+                }
+            }
+            .sheet(isPresented: $isPickingPhoto) {
+                PhotoAssetPicker(
+                    selectionLimit: 1,
+                    onSelectionDone: {
+                        isPickingPhoto = false
+                    },
+                    onPick: { picked in
+                        guard let photo = picked.first else { return }
+                        if let filename = HomeBackgroundStore.replace(photo.data, previousFilename: backgroundFilename) {
+                            backgroundFilename = filename
+                        }
+                    }
+                )
+            }
+        }
+    }
+}

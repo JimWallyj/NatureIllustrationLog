@@ -8,20 +8,31 @@
 
 /* Begin PBXBuildFile section */
 		2E297212307C864B008A1B98 /* InfoPlist.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = 2E297210307C864B008A1B98 /* InfoPlist.xcstrings */; };
-		2E297213307C864B008A1B98 /* Localizable.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = 2E297211307C864B008A1B98 /* Localizable.xcstrings */; };
-		2E74305A3068405600D4B32F /* NatureIllustrationLogApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E7430593068405600D4B32F /* NatureIllustrationLogApp.swift */; };
+		2E297233307DD444008A1B98 /* Localizable.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = 2E297232307DD444008A1B98 /* Localizable.xcstrings */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		2E297210307C864B008A1B98 /* InfoPlist.xcstrings */ = {isa = PBXFileReference; lastKnownFileType = text.json.xcstrings; path = InfoPlist.xcstrings; sourceTree = "<group>"; };
-		2E297211307C864B008A1B98 /* Localizable.xcstrings */ = {isa = PBXFileReference; lastKnownFileType = text.json.xcstrings; path = Localizable.xcstrings; sourceTree = "<group>"; };
+		2E297232307DD444008A1B98 /* Localizable.xcstrings */ = {isa = PBXFileReference; lastKnownFileType = text.json.xcstrings; path = Localizable.xcstrings; sourceTree = "<group>"; };
 		2E74303030683EE500D4B32F /* NatureIllustrationLog.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = NatureIllustrationLog.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		2E7430593068405600D4B32F /* NatureIllustrationLogApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NatureIllustrationLogApp.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
+
+/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		2E2881733085C523009F9C0B /* Exceptions for "NatureIllustrationLog" folder in "NatureIllustrationLog" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Info.plist,
+			);
+			target = 2E74302F30683EE500D4B32F /* NatureIllustrationLog */;
+		};
+/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		2E74303230683EE500D4B32F /* NatureIllustrationLog */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				2E2881733085C523009F9C0B /* Exceptions for "NatureIllustrationLog" folder in "NatureIllustrationLog" target */,
+			);
 			path = NatureIllustrationLog;
 			sourceTree = "<group>";
 		};
@@ -42,9 +53,8 @@
 			isa = PBXGroup;
 			children = (
 				2E74303230683EE500D4B32F /* NatureIllustrationLog */,
-				2E7430593068405600D4B32F /* NatureIllustrationLogApp.swift */,
 				2E297210307C864B008A1B98 /* InfoPlist.xcstrings */,
-				2E297211307C864B008A1B98 /* Localizable.xcstrings */,
+				2E297232307DD444008A1B98 /* Localizable.xcstrings */,
 				2E74303130683EE500D4B32F /* Products */,
 			);
 			sourceTree = "<group>";
@@ -90,7 +100,7 @@
 			attributes = {
 				BuildIndependentTargetsInParallel = 1;
 				LastSwiftUpdateCheck = 2630;
-				LastUpgradeCheck = 2630;
+				LastUpgradeCheck = 2700;
 				TargetAttributes = {
 					2E74302F30683EE500D4B32F = {
 						CreatedOnToolsVersion = 26.3;
@@ -123,7 +133,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				2E297212307C864B008A1B98 /* InfoPlist.xcstrings in Resources */,
-				2E297213307C864B008A1B98 /* Localizable.xcstrings in Resources */,
+				2E297233307DD444008A1B98 /* Localizable.xcstrings in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -134,7 +144,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				2E74305A3068405600D4B32F /* NatureIllustrationLogApp.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -146,6 +155,7 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
@@ -200,6 +210,7 @@
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 			};
@@ -210,6 +221,7 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
@@ -257,6 +269,7 @@
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				SDKROOT = iphoneos;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
 				SWIFT_COMPILATION_MODE = wholemodule;
 				VALIDATE_PRODUCT = YES;
 			};
@@ -272,6 +285,8 @@
 				DEVELOPMENT_TEAM = QRX7D8367M;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = NatureIllustrationLog/Info.plist;
+				INFOPLIST_KEY_LSSupportsOpeningDocumentsInPlace = NO;
 				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "Used to show where you are on the map when you record a photo's location.";
 				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "Used to read the date and location of photos you add to your nature log.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
@@ -279,6 +294,7 @@
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				IPHONEOS_DEPLOYMENT_TARGET = 27.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -306,6 +322,8 @@
 				DEVELOPMENT_TEAM = QRX7D8367M;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = NatureIllustrationLog/Info.plist;
+				INFOPLIST_KEY_LSSupportsOpeningDocumentsInPlace = NO;
 				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "Used to show where you are on the map when you record a photo's location.";
 				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "Used to read the date and location of photos you add to your nature log.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
@@ -313,6 +331,7 @@
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				IPHONEOS_DEPLOYMENT_TARGET = 27.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
