@@ -185,7 +185,8 @@
 - **Exit points:** '<' in the top left corner returns to Settings.
 - **UI elements:** a list of replaced files, each with its thumbnail, file name, date replaced, and days left (e.g. "Deleted in 23 days"). Empty state: "Nothing Recently Replaced."
 - **User actions & resulting behavior:**
-  - a. Tapping an entry opens it in the File View, read-only, so it can be checked before restoring
+  - a. Tapping an entry opens it in the File View, read-only, so it can be checked before restoring. Restore and Delete Now buttons sit along the bottom of that screen.
+  - A hint line at the bottom of the list reads: "Tap a file to view it. Swipe right to restore, or left to delete now."
   - b. Swipe right, "Restore": puts the file back in the File List. No space check is needed, since the older version is already stored on the device. If its name is now taken, a message offers a suggested name (e.g. "Great Blue Heron (2)") that can be edited; a name that's also taken asks again. If the newer version is still in the File List, the restored one becomes a separate file.
   - c. Swipe left, "Delete Now": deletes it after a confirmation
   - d. Mac: Restore and Remove buttons plus a right-click menu

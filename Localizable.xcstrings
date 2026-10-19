@@ -1092,22 +1092,32 @@
         }
       }
     },
-    "Recently Replaced: an older version kept for 30 days. Restore or delete it from the Recently Replaced list.": {
-      "localizations": {
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Recientemente reemplazado: una versión anterior guardada durante 30 días. Restáurala o elimínala desde la lista Recientemente reemplazados."
-          }
-        }
-      }
-    },
     "There isn't enough space on this device to add these photos (about %@ needed). Free up space, or offload some files to your Mac.": {
       "localizations": {
         "es": {
           "stringUnit": {
             "state": "translated",
             "value": "No hay suficiente espacio en este dispositivo para agregar estas fotos (se necesitan unos %@). Libera espacio o descarga algunos archivos a tu Mac."
+          }
+        }
+      }
+    },
+    "Recently Replaced: an older version kept for 30 days. Use Restore or Delete Now at the bottom of the screen.": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Recientemente reemplazado: una versión anterior guardada durante 30 días. Usa Restaurar o Eliminar ahora en la parte inferior de la pantalla."
+          }
+        }
+      }
+    },
+    "Tap a file to view it. Swipe right to restore, or left to delete now.": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Toca un archivo para verlo. Desliza a la derecha para restaurarlo o a la izquierda para eliminarlo ahora."
           }
         }
       }

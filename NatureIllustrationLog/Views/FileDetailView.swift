@@ -18,7 +18,7 @@ struct FileDetailView: View {
         ScrollView {
             VStack(alignment: .leading, spacing: 20) {
                 if file.replacedDate != nil {
-                    Label("Recently Replaced: an older version kept for 30 days. Restore or delete it from the Recently Replaced list.", systemImage: "clock.arrow.circlepath")
+                    Label("Recently Replaced: an older version kept for 30 days. Use Restore or Delete Now at the bottom of the screen.", systemImage: "clock.arrow.circlepath")
                         .font(.subheadline)
                         .foregroundStyle(.secondary)
                 } else if file.isReadOnly {
