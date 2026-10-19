@@ -7,7 +7,9 @@ import SwiftUI
 struct AddFileView: View {
     @Environment(\.modelContext) private var modelContext
     @Environment(\.dismiss) private var dismiss
-    @Query(sort: \SubjectFile.name) private var existingFiles: [SubjectFile]
+    // Older versions in Recently Replaced don't block a name.
+    @Query(filter: #Predicate<SubjectFile> { $0.replacedDate == nil }, sort: \SubjectFile.name)
+    private var existingFiles: [SubjectFile]
 
     @State private var name = ""
     @State private var fieldNotes = ""
@@ -21,6 +23,7 @@ struct AddFileView: View {
     @State private var isPickingLocation = false
     @State private var showingDuplicateNameAlert = false
     @State private var showingPhotoAccessExplainer = false
+    @State private var photoSpaceNeeded: Int64?
 
     var body: some View {
         NavigationStack {
@@ -65,11 +68,17 @@ struct AddFileView: View {
                         isImporting = true
                     },
                     onPick: { picked in
-                        photos.append(contentsOf: picked)
                         isImporting = false
+                        let alreadyPicked = StorageCheck.bytes(of: photos)
+                        if StorageCheck.hasRoom(forBytes: alreadyPicked + StorageCheck.bytes(of: picked)) {
+                            photos.append(contentsOf: picked)
+                        } else {
+                            photoSpaceNeeded = StorageCheck.bytes(of: picked)
+                        }
                     }
                 )
             }
+            .notEnoughSpaceForPhotosAlert(bytesNeeded: $photoSpaceNeeded)
             .sheet(isPresented: $isPickingLocation) {
                 LocationPickerView(initialCoordinate: photoCoordinate) { coordinate in
                     photoCoordinate = coordinate

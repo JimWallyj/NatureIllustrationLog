@@ -1,3 +1,4 @@
+import SwiftData
 import SwiftUI
 import UniformTypeIdentifiers
 
@@ -9,6 +10,8 @@ struct EditHomeView: View {
     @AppStorage("homeBackgroundFilename") private var backgroundFilename: String = ""
     @State private var isPickingPhoto = false
     @State private var isPickingImportFiles = false
+    @Query(filter: #Predicate<SubjectFile> { $0.replacedDate != nil })
+    private var replacedFiles: [SubjectFile]
 
     var body: some View {
         NavigationStack {
@@ -23,6 +26,14 @@ struct EditHomeView: View {
                     isPickingImportFiles = true
                 }
                 .buttonStyle(RaisedButtonStyle())
+
+                NavigationLink {
+                    RecentlyReplacedView()
+                } label: {
+                    Text("Recently Replaced (\(replacedFiles.count))")
+                }
+                .buttonStyle(RaisedButtonStyle())
+                .disabled(replacedFiles.isEmpty)
                 Spacer()
             }
             .frame(maxWidth: .infinity)

@@ -69,3 +69,22 @@ struct ImportingOverlay: View {
         }
     }
 }
+
+extension View {
+    /// The "Not Enough Space" message shown when picked photos won't fit on the device.
+    func notEnoughSpaceForPhotosAlert(bytesNeeded: Binding<Int64?>) -> some View {
+        alert(
+            "Not Enough Space",
+            isPresented: Binding(
+                get: { bytesNeeded.wrappedValue != nil },
+                set: { isPresented in
+                    if !isPresented { bytesNeeded.wrappedValue = nil }
+                }
+            )
+        ) {
+            Button("OK", role: .cancel) {}
+        } message: {
+            Text("There isn't enough space on this device to add these photos (about \(StorageCheck.formatted(bytesNeeded.wrappedValue ?? 0)) needed). Free up space, or offload some files to your Mac.")
+        }
+    }
+}

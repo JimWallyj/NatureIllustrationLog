@@ -15,11 +15,17 @@ final class ImportManager {
         let suggestedName: String
         /// True when more files are still waiting in this transfer.
         let canApplyToAll: Bool
+        /// True when the incoming file is a copy of this same file (same hidden ID)
+        /// sent from the user's own device, so "Update" can be offered.
+        let canUpdate: Bool
+        /// True when the copy on this device was changed more recently than the incoming one.
+        let deviceCopyIsNewer: Bool
     }
 
     enum ConflictChoice {
         case useSuggested
         case useName(String)
+        case update
         case skip
         case cancelTransfer
     }
@@ -27,6 +33,7 @@ final class ImportManager {
     struct Summary: Identifiable {
         let id = UUID()
         var imported = 0
+        var updated = 0
         var skipped = 0
         var unreadable = 0
     }
@@ -113,6 +120,12 @@ final class ImportManager {
 
             if !isNameAvailable(name) {
                 let suggested = suggestedName(for: name)
+                let existing = currentFile(named: name)
+                let canUpdate = existing.map {
+                    package.manifest.transferKind == .ownDevices
+                        && $0.uniqueID == package.manifest.uniqueID
+                        && !$0.isReadOnly
+                } ?? false
                 let choice: ConflictChoice
                 if let standingChoice {
                     choice = standingChoice
@@ -120,7 +133,9 @@ final class ImportManager {
                     let (picked, applyToAll) = await askAboutConflict(Conflict(
                         incomingName: name,
                         suggestedName: suggested,
-                        canApplyToAll: index < urls.count - 1
+                        canApplyToAll: index < urls.count - 1,
+                        canUpdate: canUpdate,
+                        deviceCopyIsNewer: (existing?.lastChanged ?? .distantPast) > package.manifest.lastChanged
                     ))
                     choice = picked
                     if applyToAll {
@@ -136,6 +151,16 @@ final class ImportManager {
                     name = suggested
                 case .useName(let typed):
                     name = typed.trimmingCharacters(in: .whitespacesAndNewlines)
+                case .update:
+                    // The current version moves to Recently Replaced (kept 30 days);
+                    // the incoming copy takes its place with the same hidden ID.
+                    if let existing, canUpdate {
+                        existing.replacedDate = .now
+                        insert(package, named: name, into: context)
+                        result.updated += 1
+                        await Task.yield()
+                        continue
+                    }
                 case .skip:
                     result.skipped += 1
                     continue
@@ -237,9 +262,18 @@ final class ImportManager {
         return ((try? context.fetch(descriptor)) ?? []).map(\.name)
     }
 
+    /// The current file (not in Recently Replaced) with this name, ignoring upper/lower case.
+    private func currentFile(named name: String) -> SubjectFile? {
+        guard let context else { return nil }
+        let descriptor = FetchDescriptor<SubjectFile>(predicate: #Predicate { $0.replacedDate == nil })
+        return ((try? context.fetch(descriptor)) ?? []).first {
+            $0.name.caseInsensitiveCompare(name) == .orderedSame
+        }
+    }
+
     private func fileExists(withID id: UUID) -> Bool {
         guard let context else { return false }
-        let descriptor = FetchDescriptor<SubjectFile>(predicate: #Predicate { $0.uniqueID == id })
+        let descriptor = FetchDescriptor<SubjectFile>(predicate: #Predicate { $0.uniqueID == id && $0.replacedDate == nil })
         return ((try? context.fetchCount(descriptor)) ?? 0) > 0
     }
 

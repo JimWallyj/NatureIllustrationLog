@@ -58,6 +58,7 @@ struct HomeView: View {
                 EditHomeView()
             }
             .task {
+                RecentlyReplacedView.removeExpired(in: modelContext)
                 requestPhotoLibraryAccessIfNeeded()
             }
         }

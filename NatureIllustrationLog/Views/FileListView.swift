@@ -4,7 +4,9 @@ import SwiftUI
 struct FileListView: View {
     @Environment(\.modelContext) private var modelContext
     @Environment(NavigationCoordinator.self) private var coordinator
-    @Query(sort: \SubjectFile.name) private var files: [SubjectFile]
+    // Older versions waiting in Recently Replaced are not shown here.
+    @Query(filter: #Predicate<SubjectFile> { $0.replacedDate == nil }, sort: \SubjectFile.name)
+    private var files: [SubjectFile]
     @State private var showingAddFile = false
     @State private var pendingDeleteFile: SubjectFile?
 
@@ -17,6 +19,7 @@ struct FileListView: View {
     @State private var isPreparing = false
     @State private var shareBatch: ExportBatch?
     @State private var lastExportFolder: URL?
+    @State private var showingMultiDelete = false
 
     var body: some View {
         List(selection: $selection) {
@@ -64,6 +67,7 @@ struct FileListView: View {
             }
         }
         .navigationTitle("Illustration Projects")
+        .navigationBarTitleDisplayMode(.large)
         .navigationBarBackButtonHidden(true)
         .toolbar {
             ToolbarItemGroup(placement: .topBarLeading) {
@@ -86,6 +90,15 @@ struct FileListView: View {
                     Image(systemName: "square.and.arrow.up")
                 }
                 .disabled(!isSelecting || selection.isEmpty)
+
+                if isSelecting {
+                    Button {
+                        showingMultiDelete = true
+                    } label: {
+                        Image(systemName: "trash")
+                    }
+                    .disabled(selection.isEmpty)
+                }
             }
             ToolbarItemGroup(placement: .topBarTrailing) {
                 if isSelecting {
@@ -125,6 +138,20 @@ struct FileListView: View {
             }
         } message: {
             Text("This removes the photo and notes for this file. This can't be undone.")
+        }
+        .confirmationDialog(
+            selectedFiles.count == 1 ? Text("Delete 1 file?") : Text("Delete \(selectedFiles.count) files?"),
+            isPresented: $showingMultiDelete,
+            titleVisibility: .visible
+        ) {
+            Button("Delete", role: .destructive) { deleteSelected() }
+            Button("Cancel", role: .cancel) {}
+        } message: {
+            if selectedFiles.contains(where: \.isPlaceholder) {
+                Text("This removes their photos and notes. This can't be undone. Full files on your Mac are not affected.")
+            } else {
+                Text("This removes their photos and notes. This can't be undone.")
+            }
         }
         .confirmationDialog("Send Files", isPresented: $showingExportOptions, titleVisibility: .visible) {
             Button("Send to My Devices") { export(.ownDevices) }
@@ -171,6 +198,13 @@ struct FileListView: View {
     /// Read-only files and placeholders can be checked but not sent.
     private var sendableFiles: [SubjectFile] {
         selectedFiles.filter { !$0.isReadOnly && !$0.isPlaceholder }
+    }
+
+    private func deleteSelected() {
+        for file in selectedFiles {
+            modelContext.delete(file)
+        }
+        endSelecting()
     }
 
     private func endSelecting() {

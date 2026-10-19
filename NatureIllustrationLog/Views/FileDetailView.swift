@@ -6,6 +6,8 @@ struct FileDetailView: View {
     @Bindable var file: SubjectFile
     @Environment(\.modelContext) private var modelContext
     @Environment(NavigationCoordinator.self) private var coordinator
+    @Environment(\.dismiss) private var dismiss
+    @State private var photoSpaceNeeded: Int64?
     @State private var isEditingLocation = false
     @State private var showingFullMap = false
     @State private var pickerTarget: AlbumKind?
@@ -15,7 +17,11 @@ struct FileDetailView: View {
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 20) {
-                if file.isReadOnly {
+                if file.replacedDate != nil {
+                    Label("Recently Replaced: an older version kept for 30 days. Restore or delete it from the Recently Replaced list.", systemImage: "clock.arrow.circlepath")
+                        .font(.subheadline)
+                        .foregroundStyle(.secondary)
+                } else if file.isReadOnly {
                     Label("Read-Only: shared with you. You can view this file but not change it.", systemImage: "lock.fill")
                         .font(.subheadline)
                         .foregroundStyle(.secondary)
@@ -39,18 +45,19 @@ struct FileDetailView: View {
         .toolbar {
             ToolbarItem(placement: .topBarLeading) {
                 Button {
-                    if !coordinator.path.isEmpty {
-                        coordinator.path.removeLast()
-                    }
+                    dismiss()
                 } label: {
                     Image(systemName: "chevron.left")
                 }
             }
             ToolbarItem(placement: .topBarTrailing) {
-                Button {
-                    coordinator.goHome()
-                } label: {
-                    Image(systemName: "house")
+                // Not shown when viewing an older version from Recently Replaced (opened from Settings).
+                if file.replacedDate == nil {
+                    Button {
+                        coordinator.goHome()
+                    } label: {
+                        Image(systemName: "house")
+                    }
                 }
             }
         }
@@ -80,11 +87,16 @@ struct FileDetailView: View {
                     isImporting = true
                 },
                 onPick: { picked in
-                    file.appendPhotos(picked, kind: kind, in: modelContext)
                     isImporting = false
+                    if StorageCheck.hasRoom(forBytes: StorageCheck.bytes(of: picked)) {
+                        file.appendPhotos(picked, kind: kind, in: modelContext)
+                    } else {
+                        photoSpaceNeeded = StorageCheck.bytes(of: picked)
+                    }
                 }
             )
         }
+        .notEnoughSpaceForPhotosAlert(bytesNeeded: $photoSpaceNeeded)
         .fullScreenCover(item: $presentedAlbum) { kind in
             AlbumView(file: file, kind: kind)
         }
@@ -114,14 +126,14 @@ struct FileDetailView: View {
     private var subjectPhotoSection: some View {
         if let cover = file.coverPhoto {
             VStack(alignment: .leading, spacing: 10) {
-                PhotoDateRow(photo: cover, isEditable: !file.isReadOnly)
+                PhotoDateRow(photo: cover, isEditable: !file.isLocked)
 
                 CoverPhotoView(photo: cover)
                     .onTapGesture { presentedAlbum = .subject }
 
                 albumLink(for: .subject)
             }
-        } else if file.isReadOnly {
+        } else if file.isLocked {
             Text("No photos")
                 .foregroundStyle(.secondary)
         } else {
@@ -142,10 +154,10 @@ struct FileDetailView: View {
                 CoverPhotoView(photo: cover)
                     .onTapGesture { presentedAlbum = .illustration }
 
-                PhotoDateRow(photo: cover, isEditable: !file.isReadOnly)
+                PhotoDateRow(photo: cover, isEditable: !file.isLocked)
 
                 albumLink(for: .illustration)
-            } else if file.isReadOnly {
+            } else if file.isLocked {
                 Text("No photos")
                     .foregroundStyle(.secondary)
             } else {
@@ -191,7 +203,7 @@ struct FileDetailView: View {
                     .foregroundStyle(.secondary)
             }
 
-            if !file.isReadOnly {
+            if !file.isLocked {
                 Button {
                     isEditingLocation = true
                 } label: {
@@ -203,7 +215,7 @@ struct FileDetailView: View {
                 .font(.subheadline)
                 .foregroundStyle(.secondary)
 
-            if !file.isReadOnly {
+            if !file.isLocked {
                 Button {
                     isEditingLocation = true
                 } label: {
@@ -216,7 +228,7 @@ struct FileDetailView: View {
     private func notesSection(title: LocalizedStringKey, text: Binding<String>) -> some View {
         VStack(alignment: .leading, spacing: 6) {
             Text(title).font(.headline)
-            if file.isReadOnly {
+            if file.isLocked {
                 // Shown exactly as typed; can be selected and copied, not changed.
                 Text(text.wrappedValue)
                     .frame(maxWidth: .infinity, minHeight: 60, alignment: .topLeading)

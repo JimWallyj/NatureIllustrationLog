@@ -158,10 +158,12 @@
   - Map and Satellite buttons change the map style
 
 #### Transfer additions to existing screens (planned)
+- **File List title:** Apple's large-title style: the icon row sits at the top and "Illustration Projects" appears in large type on its own line below it, so it's never cut off; it shrinks into the top bar when scrolling.
+- **Delete several files:** in Select mode a trash icon appears just right of the Share icon (dimmed until a file is checked). It asks first: "Delete 3 files? This removes their photos and notes. This can't be undone." (adding "Full files on your Mac are not affected." when placeholders are included). Swipe-to-delete on a single file still works outside Select mode. On the Mac: the same trash icon, the Delete key, and the right-click menu.
 - **File List:** files show a lock icon if read-only (received from another person) and an "On Mac" badge if offloaded (placeholder). Swipe to delete (iPhone/iPad) and a Remove button plus right-click menu (Mac) work on every kind of file, always with confirmation. For a placeholder the message reads: "Remove this placeholder from this iPhone? The full file on your Mac is not affected."
 - **Export menu:** reached from the File List: tap Select, check one or more files, then tap the Share icon. It offers three choices: "Send to My Devices" (editable on arrival), "Share Read-Only", and "Send to Mac and Free Up Space" (offload; added in Phase 3). After a choice, the standard system share sheet opens (AirDrop, Files, Messages, Mail, iCloud Drive). Read-only files and placeholders can be checked, but can't be sent; if any are selected the menu explains, e.g. "2 of the 5 selected files can't be sent (read-only or already on your Mac). Send the other 3?"
 - **Mac File List:** the same Select button, circles, and Share icon, plus the usual Command-click and Shift-click to select several files.
-- **Receiving files:** two ways. (1) Tap a `.natlog` file in AirDrop, Files, Messages, or Mail and open it in the app; it imports right away. (2) Settings → "Import Files". While importing, a progress indicator shows; at the end a summary appears, e.g. "Imported: 3 · Skipped: 1" (plus "Couldn't read: n" for damaged files). Imported files appear in the File List in alphabetical order.
+- **Receiving files:** two ways. (1) Open a `.natlog` file from AirDrop, Messages, or Mail in the app; it imports right away. In the Files app, tapping the file shows a preview ("Nature Illustration Log File" and its size); tap Share, then the app's icon, to import it. (The app keeps "Supports opening documents in place" set to NO, so the app receives its own copy and cleans it up after importing.) (2) Settings → "Import Files". While importing, a progress indicator shows; at the end a summary appears, e.g. "Imported: 3 · Skipped: 1" (plus "Couldn't read: n" for damaged files). Imported files appear in the File List in alphabetical order.
 - **File View, read-only file:** a "Read-Only: shared with you" line appears at the top. Everything can be viewed (including the albums, Full Photo View, and Full Map View); nothing can be edited: notes are shown as text (selectable for copying), dates can't be changed, and the Add Photos, Edit Location, and album +/swipe controls are hidden. The file can't be passed on to someone else, but it can be deleted.
 - **File View, placeholder:** name, notes, dates, location map, and photo thumbnails are shown; nothing can be edited. Tapping a photo shows "Full-size photo is on your Mac."
 
@@ -184,7 +186,7 @@
 - **UI elements:** a list of replaced files, each with its thumbnail, file name, date replaced, and days left (e.g. "Deleted in 23 days"). Empty state: "Nothing Recently Replaced."
 - **User actions & resulting behavior:**
   - a. Tapping an entry opens it in the File View, read-only, so it can be checked before restoring
-  - b. Swipe right, "Restore": puts the file back in the File List (runs the storage space check; if its name is now taken, the Name Conflict choices apply)
+  - b. Swipe right, "Restore": puts the file back in the File List. No space check is needed, since the older version is already stored on the device. If its name is now taken, a message offers a suggested name (e.g. "Great Blue Heron (2)") that can be edited; a name that's also taken asks again. If the newer version is still in the File List, the restored one becomes a separate file.
   - c. Swipe left, "Delete Now": deletes it after a confirmation
   - d. Mac: Restore and Remove buttons plus a right-click menu
 
@@ -301,7 +303,7 @@
 - **Edge cases:** the export fails or is cancelled, or the user taps Not Yet (nothing is removed; the file stays a full file and can be offloaded again later); the user deletes the placeholder (only the placeholder is removed; the Mac copy is unaffected).
 
 **Feature: Storage Space Check (planned)**
-- **Inputs:** an operation about to add a lot of data: adding photos to an album (or in Add File), importing files, or restoring from Recently Replaced.
+- **Inputs:** an operation about to add a lot of data: adding photos to an album (or in Add File, or from the File Screen) and importing files.
 - **Expected behavior:** before starting, the app checks that the device has enough free space for the operation. If it doesn't, nothing starts and the user sees a message with the approximate space needed and a suggestion, e.g. "There isn't enough space on this iPhone to import these 12 files (about 1.4 GB needed). Free up space, or offload some files to your Mac."
 - **Not included:** no general "storage almost full" warning and no app storage-use display; iOS/macOS already provide both.
 - **Edge cases:** space runs out partway despite the check (the item in progress is discarded cleanly; items already finished stay).

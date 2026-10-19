@@ -65,6 +65,10 @@ final class SubjectFile {
         self.lastChanged = .now
     }
 
+    /// True when the file can only be viewed, not changed: received read-only,
+    /// offloaded to the Mac (placeholder), or an older version kept in Recently Replaced.
+    var isLocked: Bool { isReadOnly || isPlaceholder || replacedDate != nil }
+
     /// Records that the user changed something in this file.
     func touch() {
         lastChanged = .now

@@ -14,6 +14,7 @@ struct AlbumView: View {
     @State private var isImporting = false
     @State private var viewing: ViewerItem?
     @State private var pendingDelete: AlbumPhoto?
+    @State private var photoSpaceNeeded: Int64?
 
     private var photos: [AlbumPhoto] { file.album(kind) }
 
@@ -28,11 +29,11 @@ struct AlbumView: View {
                     HStack(spacing: 12) {
                         thumbnail(for: photo)
                             .onTapGesture { viewing = ViewerItem(id: index) }
-                        PhotoDateRow(photo: photo, isEditable: !file.isReadOnly)
+                        PhotoDateRow(photo: photo, isEditable: !file.isLocked)
                             .frame(maxWidth: .infinity, alignment: .leading)
                     }
                     .swipeActions(edge: .trailing) {
-                        if !file.isReadOnly {
+                        if !file.isLocked {
                             Button(role: .destructive) {
                                 pendingDelete = photo
                             } label: {
@@ -41,7 +42,7 @@ struct AlbumView: View {
                         }
                     }
                     .swipeActions(edge: .leading) {
-                        if index > 0 && !file.isReadOnly {
+                        if index > 0 && !file.isLocked {
                             Button {
                                 makeFirst(photo)
                             } label: {
@@ -73,7 +74,7 @@ struct AlbumView: View {
                     }
                 }
                 ToolbarItem(placement: .topBarTrailing) {
-                    if !file.isReadOnly {
+                    if !file.isLocked {
                         Button {
                             isPickingPhotos = true
                         } label: {
@@ -90,11 +91,16 @@ struct AlbumView: View {
                         isImporting = true
                     },
                     onPick: { picked in
-                        file.appendPhotos(picked, kind: kind, in: modelContext)
                         isImporting = false
+                        if StorageCheck.hasRoom(forBytes: StorageCheck.bytes(of: picked)) {
+                            file.appendPhotos(picked, kind: kind, in: modelContext)
+                        } else {
+                            photoSpaceNeeded = StorageCheck.bytes(of: picked)
+                        }
                     }
                 )
             }
+            .notEnoughSpaceForPhotosAlert(bytesNeeded: $photoSpaceNeeded)
             .fullScreenCover(item: $viewing) { item in
                 FullPhotoView(photos: photos, startIndex: item.id)
             }

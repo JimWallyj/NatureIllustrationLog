@@ -24,10 +24,15 @@ struct ImportOverlay: View {
                 }
             } else if let summary = importer.summary {
                 MessageCard(title: "Import Complete") {
-                    if summary.unreadable > 0 {
-                        Text("Imported: \(summary.imported) · Skipped: \(summary.skipped) · Couldn't read: \(summary.unreadable)")
-                    } else {
-                        Text("Imported: \(summary.imported) · Skipped: \(summary.skipped)")
+                    VStack(spacing: 8) {
+                        if summary.unreadable > 0 {
+                            Text("Imported: \(summary.imported) · Skipped: \(summary.skipped) · Couldn't read: \(summary.unreadable)")
+                        } else {
+                            Text("Imported: \(summary.imported) · Skipped: \(summary.skipped)")
+                        }
+                        if summary.updated > 0 {
+                            Text("Updated: \(summary.updated). The older versions were moved to Recently Replaced (gear icon on Home) for 30 days.")
+                        }
                     }
                 } onOK: {
                     importer.summary = nil
@@ -55,11 +60,20 @@ struct NameConflictCard: View {
     @State private var newName = ""
     @State private var typedNameTaken = false
     @State private var applyToAll = false
+    @State private var showingNewerWarning = false
 
     var body: some View {
         ViewThatFits(in: .vertical) {
             content
             ScrollView { content }
+        }
+        .alert("Update Anyway?", isPresented: $showingNewerWarning) {
+            Button("Update Anyway") {
+                importer.resolveConflict(.update, applyToAll: false)
+            }
+            Button("Cancel", role: .cancel) {}
+        } message: {
+            Text("The copy on this device was changed more recently. Update anyway?")
         }
         .frame(maxWidth: 440)
         .background(.regularMaterial, in: RoundedRectangle(cornerRadius: 16))
@@ -80,6 +94,25 @@ struct NameConflictCard: View {
                     .frame(maxWidth: .infinity)
             }
             .buttonStyle(.borderedProminent)
+
+            if conflict.canUpdate {
+                VStack(alignment: .leading, spacing: 4) {
+                    Button {
+                        if conflict.deviceCopyIsNewer {
+                            showingNewerWarning = true
+                        } else {
+                            importer.resolveConflict(.update, applyToAll: false)
+                        }
+                    } label: {
+                        Text("Update This File")
+                            .frame(maxWidth: .infinity)
+                    }
+                    .buttonStyle(.bordered)
+                    Text("This is the same file, sent from one of your devices. Update replaces the copy here with it; the current version goes to Recently Replaced for 30 days.")
+                        .font(.footnote)
+                        .foregroundStyle(.secondary)
+                }
+            }
 
             VStack(alignment: .leading, spacing: 6) {
                 Text("Or enter a new name:")
