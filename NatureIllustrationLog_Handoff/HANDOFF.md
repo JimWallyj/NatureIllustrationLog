@@ -1,87 +1,72 @@
 # Nature Illustration Log and Locator — Handoff
 
-Written 2026-10-13 at the end of the first long conversation. Read this first, then the spec.
+Last updated 2026-10-18, at the end of the second conversation (Mac-transfer decisions and Phase 1). Read this first, then the spec. The first conversation's handoff is kept as `HANDOFF_2026-10-13_original.md`.
 
 ## What this is
-An iPhone/iPad app (SwiftUI + SwiftData) for nature illustrators. Each "file" holds one or more photos of a nature subject, field notes, a pinned map location, notes for an illustration project, and (later) photos of the finished illustration. The illustration itself is made outside the app.
+An iPhone/iPad app (SwiftUI + SwiftData) for nature illustrators. Each "file" holds one or more photos of a nature subject, field notes, a pinned map location, notes for an illustration project, and photos of the finished illustration. The illustration itself is made outside the app. A Mac version is being added so files can move between the user's devices.
 
-## Current state
-- Everything in the spec is built and has been run and tested by the user on an iPhone 17 (iOS 27.0.1), Xcode 27.0, deployment target iOS 27.
-- Claude has no Xcode in its environment, so none of this code was compiled by Claude. The user built it, ran it, and reported errors. The code compiled and ran cleanly at the end of the conversation.
-- Spanish is built (String Catalogs). Accessibility (VoiceOver, Dynamic Type) is deliberately deferred.
+## Where things are (user's Mac)
+- **Live Xcode project:** `~/Desktop/NatureIllustrationLog/` — `NatureIllustrationLog.xcodeproj`, source in `NatureIllustrationLog/` (Models, Services, Views), `Localizable.xcstrings` and `InfoPlist.xcstrings` at the top level, `NatureIllustrationLog/Info.plist` (document type settings). Under Git; the user commits to GitHub.
+- **"Jims Source Files - NatureIllustrationLog app"** is an older *copy* of the project — not the live one. Don't edit it.
+- **Handoff folder:** `~/Desktop/NatureIllustrationLog/NatureIllustrationLog_Handoff/` — this file, specs, and per-step folders (`StepXX_Files` = what was installed, `StepXX_Backup_Originals` = what it replaced).
+- **Specs:** `Nature_Illustration_Log_Spec.md` (original, untouched) and **`Nature_Illustration_Log_Spec_MacTransfer.md` (current source of truth)**. A copy of the current spec is also in the claude.ai Project.
+- The project folder uses Xcode's synchronized folders: a new .swift file placed in `NatureIllustrationLog/…` is picked up automatically.
 
-## What is in this bundle
-- `Nature_Illustration_Log_Spec.md` — the spec. It is the source of truth for behavior.
-- `Source/` — the Swift files, grouped as Models, Services, Views, Resources.
-- **Accuracy caveat:** three files (`Views/HomeView.swift`, `Services/LocationDescriber.swift`, `Services/NavigationCoordinator.swift`) were never delivered as downloads. They are rebuilt from the conversation and match what the user compiled, but **the user's own Xcode project is the source of truth**. If the project and this bundle differ, trust the project.
-- Not included: the `.xcodeproj`, the asset catalog, and project settings. Claude never saw them.
+## Working method (keep doing this)
+- Claude has direct access to the live project through the linked Mac: installs files directly, saves the replaced files to a `StepXX_Backup_Originals` folder first, and adds Spanish to `Localizable.xcstrings` by editing the JSON in place (never by replacing the file).
+- Claude can't compile. Say so; the user builds (Cmd-B) and reports errors. A "Cannot find X in scope" shown *before* building is usually Xcode lagging — building clears it.
+- After any SwiftData stored-property change, the user must delete the app from the device first.
+- Copying files back to the Mac with the "commit files" tool once silently wrote an older cached version. Prefer writing on the Mac directly with the shell, and verify.
 
-## How the app is built
-- Two SwiftData models: `SubjectFile` (name, notes, pinned location, dateAdded) and `AlbumPhoto` (full image, ~400 px thumbnail, date, which album, order). One file has many photos; both albums (subject and illustration) live in the same list, told apart by a `kind` value. Deleting a file deletes its photos.
-- Full-size photos use `@Attribute(.externalStorage)`. Lists use the thumbnails.
-- `NavigationCoordinator` holds the one NavigationStack path so Home buttons can pop to the root. Screens use their own '<' buttons with `.navigationBarBackButtonHidden(true)`.
-- `PhotoAssetPicker` wraps PHPickerViewController (multi-select, ordered), reads each photo's date from its Photos asset, and builds the thumbnail.
-- Map: SwiftUI MapKit. Place names use `MKReverseGeocodingRequest` (CLGeocoder is deprecated in iOS 26). Place search uses `MKLocalSearch`.
-- The Home background is a JPEG in the Documents folder with its filename in `@AppStorage`. It is not part of SwiftData.
-- Info.plist keys: `NSPhotoLibraryUsageDescription` and `NSLocationWhenInUseUsageDescription`. `InfoPlist.xcstrings` translates them.
+## Current state (all built, run, and tested by the user on iPhone 17, iOS 27.0.1, Xcode 27.0)
+Everything from the first conversation, plus Phase 1 of the Mac-transfer work:
+- **Step 1a:** hidden fields on SubjectFile (`uniqueID`, `lastChanged`, `isReadOnly`, `isPlaceholder`, `replacedDate`; computed `isLocked`); `touch()` updates `lastChanged` on note/location/photo/date/album edits. Gear screen renamed **Settings** ("Ajustes"); file/struct still `EditHomeView`. Shared `RaisedButtonStyle` (gradient, top highlight, shadow, press-in): Home's "Illustration Projects" in Apple standard blue, Settings buttons in forest green.
+- **Step 1b:** File List **Select** mode (Apple circles, Select All/Deselect All, Cancel) and **Share** icon → "Send to My Devices" / "Share Read-Only" → system share sheet. Transfer file = one `.natlog` per file (`FilePackage.swift`: 8-byte "NATLOG01" marker, manifest JSON length, manifest, then photo bytes).
+- **Step 1c:** import — open a `.natlog` from AirDrop/Messages/Mail (from the Files app: preview → Share → app icon. "Supports opening documents in place" is left **out** of the project — iOS treats that as NO; macOS rejects NO, and on the Mac double-clicking a .natlog in Finder opens and imports it), or Settings → **Import Files** (multi-select). `ImportManager.swift` + `ImportOverlay.swift` (overlay cards: progress, Name Conflict, Not Enough Space, summary). Read-only files: lock icon, "Read-Only" line, nothing editable. Storage space check before importing. Exported type `com.walejko.NatureIllustrationLog.file` (extension natlog) and document type (Owner) registered in Info.plist.
+- **Step 1d:** File List uses a **large title**; **trash icon** in Select mode deletes several files (with confirmation). **Update This File** in the Name Conflict card (same hidden ID, own device; "Update Anyway?" if the device copy is newer). **Recently Replaced** (Settings button with count → list with hint bar, swipe Restore/Delete Now, tap to view with Restore/Delete Now buttons; auto-delete after 30 days at launch). Space check when adding photos (Add File, File Screen, albums).
 
-## Decisions already made (don't re-ask)
-- Photos are copied into the app's storage. No smaller stored copies of full photos for now (revisit with the Mac work). Thumbnails only.
-- Location is a manual map pin, not read from the photo. Photo GPS was inaccurate (a beach photo landed inland), and many camera photos have none.
-- Dates: auto-filled from the Photos asset when available, with manual entry as the fallback. Each photo keeps its own date, and the date is editable by tapping it.
-- Duplicate file names are blocked ("File Exists"). Delete needs confirmation. Notes, dates, and location autosave.
-- Photos access is optional: if denied, an explainer offers Settings or "Continue Anyway".
-- Home screen has a fixed icon bar above the background photo.
-- Language follows the device language (Spanish and English). There is no in-app picker. User-typed content is never translated.
-- Albums: the File Screen and File List show the first photo; "Set as First" reorders.
-- iOS floor 27.0. Test older versions only if the app is shared later.
-- `dateAdded` stays internal (not shown).
+## Decisions made in the second conversation (don't re-ask)
+- No paid Apple Developer account for now; revisit when submitting to the App Store.
+- Transfers use export/import `.natlog` packages (no sync). Two kinds: "Send to My Devices" (editable) and "Share Read-Only" (to other people).
+- Name conflicts: Use suggested name "Name (2)", Enter a new name (checked, asks again if taken), Skip This File, Cancel Transfer (files already imported stay). "Do this for all remaining conflicts" covers suggested name and Skip. **Never a plain replace.**
+- Update (safe replace) only for the same hidden ID from the user's own device; older version → Recently Replaced for 30 days; warn if the device copy is newer. Read-only copies never get Update.
+- Read-only recipients: view and delete only; can't edit or pass on; lock icon. "Read-only" is enforced by the app, not real security.
+- Offloading (Phase 3): keep a read-only **placeholder** (name, notes, dates, location, thumbnails) with an "On Mac" badge; after sending, ask **"Has this file arrived on your Mac?"** (Yes / Not Yet) before removing full photos. Deleting a placeholder only removes it from the device.
+- No general "storage almost full" warning and no storage-use display; only a space check before big operations.
+- Export/Share and Select live on the File List; Import Files and Recently Replaced live on Settings.
+- Swipe delete (iPhone) and a Remove button / Delete key / right-click (Mac) always confirm.
+- The Mac version should work and look as much like the iPhone/iPad version as practicable.
 
-## Next work: Mac transfer (not started)
-Goals from the user:
-1. Offload files from the iPhone/iPad to a Mac to save device storage.
-2. A Mac version of the app, so the user can record reference photos and finished projects that live on the Mac, and view photos and maps larger.
-3. Transfer both ways (device to Mac, Mac to device).
-4. Sharing with other people is **read-only results**, not collaboration.
+## Next work
+- **Phase 2: Mac version.** Decisions to walk through one at a time: (1) how to add the Mac (Mac Catalyst vs native macOS vs "Designed for iPad"), (2) macOS floor (user tests on macOS 27; Claude suggested 27 to match the iOS rule), (3) Mac photo sources (Photos library, Finder files, drag and drop), (4) Mac layout details.
+- **Phase 3: Offload** ("Send to Mac and Free Up Space", placeholders, "On Mac" badge, image becomes optional on AlbumPhoto).
+- Open question: add Update to "Do this for all remaining conflicts" for big Mac round trips.
 
-What was discussed and recommended:
-- Build on **export/import packages** (one package per file: photos, notes, dates, location), moved by AirDrop, Files, Messages, Mail, or a shared iCloud Drive folder.
-- iCloud sync (SwiftData + CloudKit) only syncs a person's own devices, needs a paid Apple Developer account, and per an Apple forum answer (undated; re-check for iOS 27) SwiftData has no sharing support. Live sharing would mean moving to Core Data.
-- Other people can only install the app through TestFlight or the App Store, which needs the paid account. The user was hesitant about the cost and has not decided.
-- Each file needs a hidden unique ID (currently files are told apart only by name), so imports can tell an updated copy from a different file with the same name. Do this before many real files exist.
-- Likely iOS-only code to replace for macOS: the PHPicker wrapper, `UIImage`/`UIImage.preparingThumbnail`, `.topBarLeading/.topBarTrailing` toolbar placements, `fullScreenCover`, `UIApplication.openSettingsURLString`, `Color(.systemBackground)`, `navigationBarHidden`.
-- Suggested phases: (1) package format plus export/import on iPhone, (2) Mac target, (3) offload with safety checks (delete from the device only after the export is confirmed saved).
-
-Decisions still pending:
-- After offloading, should the phone keep a placeholder (name, thumbnail, notes) or remove the file entirely?
-- Rule when an imported file matches one already on the device: replace, keep both, or skip.
-- Which copy wins if the same file is edited in two places without sync.
-- Should shared copies import as read-only? (A flag in the package is one idea; confirm with the user.)
-- Paid Apple Developer account: yes or no, and when.
-
-## Open items
-- Have a fluent Spanish speaker review `Localizable.xcstrings` and `InfoPlist.xcstrings` before sharing the app.
-- More languages later (the user earlier mentioned French, German, Japanese).
-- Verify: iPad (10th generation or later) compatibility with iOS 27; that free-account builds expire after about 7 days; any new Xcode 27 warnings.
-- Accessibility (VoiceOver labels on icon buttons, Dynamic Type layout pass) is deferred, not rejected.
-- Unit tests listed in the spec's Section 8 are not written yet.
+## Open items (carried over)
+- Fluent Spanish review of both String Catalogs before sharing the app. More languages later (French, German, Japanese mentioned).
+- Verify iPad (10th gen or later) on iOS 27; free-account builds expire after about 7 days; new Xcode 27 warnings.
+- Accessibility (VoiceOver labels, Dynamic Type) deferred, not rejected.
+- Unit tests in spec Section 8 not written yet.
+- Smaller stored copies of full photos: revisit with offloading.
+- On hold (user's choice): a display name "Nature Illustration Log" instead of "NatureIllustrationLog" in the Mac title bar/menu and under the icon (may be shortened on the iPhone home screen).
+- System permission prompts (Photos, Location) are drawn by iOS/macOS; their button order can't be changed by the app.
 
 ## Gotchas that cost time
-- Odd errors (including "Cannot find 'X' in scope") were usually stale builds. Fix: delete the app from the Simulator and run Clean Build Folder (Shift-Cmd-K).
-- After any SwiftData model change, delete the app from the test device first.
-- `scaledToFill()` on an image widens its layout and can push other views off-screen. Use `Color.clear.overlay { image }` plus `.clipped()`.
-- Custom '<' buttons need `.navigationBarBackButtonHidden(true)`, or a second back arrow appears.
-- The Photos key must be exactly `NSPhotoLibraryUsageDescription`. A similar key name caused a crash once.
-- Replacing a String Catalog: delete the old file from disk (Show in Finder) or Xcode names the new one "Localizable 2" and Spanish stops working.
-- Map labels and system buttons follow the device language, not the Xcode scheme's App Language. Test by changing the device language.
-- Dismiss the photo picker through SwiftUI state, not `picker.dismiss`, or sheets and picker state fall out of sync.
+- Stale builds cause odd errors: delete the app from the Simulator/device and Clean Build Folder (Shift-Cmd-K).
+- `scaledToFill()` widens layout; use `Color.clear.overlay { image }` plus `.clipped()`.
+- Custom '<' buttons need `.navigationBarBackButtonHidden(true)`.
+- The Photos key must be exactly `NSPhotoLibraryUsageDescription`.
+- Replacing a String Catalog file makes "Localizable 2"; edit the existing catalog instead.
+- Map labels and system buttons follow the device language, not the scheme language.
+- Dismiss the photo picker through SwiftUI state, not `picker.dismiss`.
+- Files app shows a preview (not the app) for `.natlog` because opening-in-place is off — import via Share → app icon.
+- Setting `LSSupportsOpeningDocumentsInPlace = NO` breaks the Mac Catalyst build ("not supported on macOS"); per-SDK conditions didn't take effect while Xcode was open. Fix used: remove the setting entirely. After editing project.pbxproj outside Xcode, quit and reopen Xcode.
+- Mac Photos access: the Signing & Capabilities "Photo Library" section did not add the Mac sandbox permission; macOS silently denied access until `ENABLE_RESOURCE_ACCESS_PHOTO_LIBRARY = YES` was added to the build settings (with Xcode quit). On the Mac, "Open Settings" goes to System Settings → Privacy & Security → Photos (`SystemSettingsLink`).
+- Swipe actions are hard to discover; pair them with visible buttons or a hint.
 
 ## How the user likes to work
-- Not an Xcode expert: give complete replacement files, say which folder each goes in, and give step-by-step Xcode instructions.
-- Ask before changing behavior or guessing at something unclear. Give a short recommendation with the tradeoff.
-- Keep the spec updated alongside code changes. The user reviews the full spec and makes their own edits. They often send it back as PDF or Markdown (Pages files can't be read).
-- Say plainly that code is not compiled, so the user knows to report errors.
-- Keep the conversation in English (only the app's labels are Spanish).
-
-## Suggested first message in the new conversation
-"I'm continuing work on the Nature Illustration Log and Locator app. I've attached the handoff bundle. Please read HANDOFF.md and the spec first, then walk me through the pending Mac-transfer decisions one at a time before writing any code."
+- Not an Xcode expert: complete files, which folder, step-by-step Xcode instructions.
+- Walk through decisions one at a time with options, a recommendation, and the tradeoff; ask before changing behavior.
+- Keep the spec updated with each change. Say plainly that code is not compiled.
+- Follow Apple conventions where they exist.
+- Conversation in English; only the app's labels are Spanish.

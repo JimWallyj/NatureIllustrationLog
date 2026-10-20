@@ -1,4 +1,5 @@
 import SwiftUI
+import UIKit
 
 /// The large first photo of an album, as shown on the File Screen.
 struct CoverPhotoView: View {
@@ -86,5 +87,18 @@ extension View {
         } message: {
             Text("There isn't enough space on this device to add these photos (about \(StorageCheck.formatted(bytesNeeded.wrappedValue ?? 0)) needed). Free up space, or offload some files to your Mac.")
         }
+    }
+}
+
+/// Where the "Open Settings" button in the Photos-access message goes:
+/// this app's page in iPhone/iPad Settings, or on the Mac, System Settings →
+/// Privacy & Security → Photos.
+enum SystemSettingsLink {
+    static var photosAccess: URL? {
+        #if targetEnvironment(macCatalyst)
+        URL(string: "x-apple.systempreferences:com.apple.preference.security?Privacy_Photos")
+        #else
+        URL(string: UIApplication.openSettingsURLString)
+        #endif
     }
 }

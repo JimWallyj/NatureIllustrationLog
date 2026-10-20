@@ -102,7 +102,7 @@ struct AddFileView: View {
             }
             .alert("Photo Access Not Available", isPresented: $showingPhotoAccessExplainer) {
                 Button("Open Settings") {
-                    if let url = URL(string: UIApplication.openSettingsURLString) {
+                    if let url = SystemSettingsLink.photosAccess {
                         UIApplication.shared.open(url)
                     }
                 }
@@ -111,7 +111,7 @@ struct AddFileView: View {
                 }
                 Button("Cancel", role: .cancel) {}
             } message: {
-                Text("Without Photos access, the date taken can't be filled in automatically — you can still add a photo and enter the date by hand.")
+                Text("Selecting Continue Anyway allows photo selection but requires manual entry of the photo's date.")
             }
         }
     }

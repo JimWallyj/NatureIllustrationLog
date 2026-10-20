@@ -1,4 +1,5 @@
 import SwiftUI
+import UniformTypeIdentifiers
 import SwiftData  // Jim added due to error in #Preview = 'modelContainer(for:inMemory:isAutosaveEnabled:isUndoEnabled:onSetup:)'is not available due to missing import of defining module 'SwiftData'
 
 struct HomeView: View {
@@ -8,6 +9,8 @@ struct HomeView: View {
     @State private var showingEditHome = false
     @State private var importer = ImportManager()
     @Environment(\.modelContext) private var modelContext
+    @Environment(MenuCommands.self) private var menuCommands
+    @State private var showingImportPicker = false
 
     var body: some View {
         NavigationStack(path: $coordinator.path) {
@@ -58,6 +61,7 @@ struct HomeView: View {
                 EditHomeView()
             }
             .task {
+                MacWindow.configure()
                 RecentlyReplacedView.removeExpired(in: modelContext)
                 requestPhotoLibraryAccessIfNeeded()
             }
@@ -66,6 +70,29 @@ struct HomeView: View {
         .onOpenURL { url in
             importer.receive([url])
             importer.startPending(in: modelContext)
+        }
+        // Menu bar: File → New File (⌘N) and File → Import Files… (⌘I).
+        .onChange(of: menuCommands.newFileRequested) {
+            if menuCommands.newFileRequested {
+                menuCommands.newFileRequested = false
+                showingAddFile = true
+            }
+        }
+        .onChange(of: menuCommands.importRequested) {
+            if menuCommands.importRequested {
+                menuCommands.importRequested = false
+                showingImportPicker = true
+            }
+        }
+        .fileImporter(
+            isPresented: $showingImportPicker,
+            allowedContentTypes: [.natureLogFile],
+            allowsMultipleSelection: true
+        ) { result in
+            if case .success(let urls) = result, !urls.isEmpty {
+                importer.receive(urls)
+                importer.startPending(in: modelContext)
+            }
         }
         .overlay {
             ImportOverlay(importer: importer)
@@ -123,4 +150,5 @@ struct HomeView: View {
 #Preview {
     HomeView()
         .modelContainer(for: SubjectFile.self, inMemory: true)
+        .environment(MenuCommands())
 }

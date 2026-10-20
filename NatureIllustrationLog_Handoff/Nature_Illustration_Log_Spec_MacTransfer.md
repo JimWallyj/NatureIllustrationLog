@@ -12,7 +12,7 @@
 
 ### 2. Platform & Environment
 - **iOS version floor:** 27.0 (the version the app has been tested on; earlier versions are untested and not supported)
-- **Devices supported:** iPhone 17, iPad (10th generation or later), and Mac (planned; macOS version floor to be confirmed against the user's Mac)
+- **Devices supported:** iPhone 17, iPad (10th generation or later), and Mac (planned) via **Mac Catalyst** — the iPad app adapted as a real Mac app; Apple silicon or Intel, **macOS 27 or later** (Mac Catalyst follows the iOS 27 floor); to be tested on an M4 Mac running macOS 27
 - **Apple Developer account:** Free account for now. A paid account (needed for iCloud sync, TestFlight, and the App Store) will be revisited when it is time to submit to the App Store.
 - **Orientation support:** Portrait or Landscape
 - **Xcode / Swift version:** Xcode 27.0
@@ -163,7 +163,7 @@
 - **File List:** files show a lock icon if read-only (received from another person) and an "On Mac" badge if offloaded (placeholder). Swipe to delete (iPhone/iPad) and a Remove button plus right-click menu (Mac) work on every kind of file, always with confirmation. For a placeholder the message reads: "Remove this placeholder from this iPhone? The full file on your Mac is not affected."
 - **Export menu:** reached from the File List: tap Select, check one or more files, then tap the Share icon. It offers three choices: "Send to My Devices" (editable on arrival), "Share Read-Only", and "Send to Mac and Free Up Space" (offload; added in Phase 3). After a choice, the standard system share sheet opens (AirDrop, Files, Messages, Mail, iCloud Drive). Read-only files and placeholders can be checked, but can't be sent; if any are selected the menu explains, e.g. "2 of the 5 selected files can't be sent (read-only or already on your Mac). Send the other 3?"
 - **Mac File List:** the same Select button, circles, and Share icon, plus the usual Command-click and Shift-click to select several files.
-- **Receiving files:** two ways. (1) Open a `.natlog` file from AirDrop, Messages, or Mail in the app; it imports right away. In the Files app, tapping the file shows a preview ("Nature Illustration Log File" and its size); tap Share, then the app's icon, to import it. (The app keeps "Supports opening documents in place" set to NO, so the app receives its own copy and cleans it up after importing.) (2) Settings → "Import Files". While importing, a progress indicator shows; at the end a summary appears, e.g. "Imported: 3 · Skipped: 1" (plus "Couldn't read: n" for damaged files). Imported files appear in the File List in alphabetical order.
+- **Receiving files:** two ways. (1) Open a `.natlog` file from AirDrop, Messages, or Mail in the app; it imports right away. In the Files app, tapping the file shows a preview ("Nature Illustration Log File" and its size); tap Share, then the app's icon, to import it. (On iPhone/iPad the app receives its own copy of the file and cleans it up after importing; the "Supports opening documents in place" setting is left out, which is iOS's default and equals NO. On the Mac, double-clicking a `.natlog` file in Finder opens the app and imports it; the original file stays where it is. The Mac requires this, so the setting can't be NO there.) (2) Settings → "Import Files". While importing, a progress indicator shows; at the end a summary appears, e.g. "Imported: 3 · Skipped: 1" (plus "Couldn't read: n" for damaged files). Imported files appear in the File List in alphabetical order.
 - **File View, read-only file:** a "Read-Only: shared with you" line appears at the top. Everything can be viewed (including the albums, Full Photo View, and Full Map View); nothing can be edited: notes are shown as text (selectable for copying), dates can't be changed, and the Add Photos, Edit Location, and album +/swipe controls are hidden. The file can't be passed on to someone else, but it can be deleted.
 - **File View, placeholder:** name, notes, dates, location map, and photo thumbnails are shown; nothing can be edited. Tapping a photo shows "Full-size photo is on your Mac."
 
@@ -310,7 +310,22 @@
 - **Edge cases:** space runs out partway despite the check (the item in progress is discarded cleanly; items already finished stay).
 
 **Feature: Mac Version (planned)**
-- **Expected behavior:** the same screens, labels (English and Spanish), and flow as the iPhone/iPad version, as closely as practicable. Delete uses a Remove button and right-click menu instead of swipe, with the same confirmation.
+- **Approach:** Mac Catalyst — the same app and code, with the same screens, labels (English and Spanish), and flow as the iPhone/iPad version, as closely as practicable. Each device keeps its own files; files move between devices with the `.natlog` transfer.
+- **Photos on the Mac:** the photo picker shows the Mac's own Photos library (which includes iPhone photos if iCloud Photos is on for both), plus "Files" (see Photo Sources).
+- **Window:** opens at about 1100 × 800, resizable down to about 700 × 550, full screen supported.
+- **File Screen on a wide window:** the same single column, centered with a maximum width so notes don't stretch; photo and map display large.
+- **Right-click menus:** on a file in the File List (Open, Send to My Devices, Share Read-Only, Delete) and on a photo in an album (Set as First, Delete). On iPhone/iPad the same menus appear on long-press.
+- **Keyboard:** the Delete key deletes the checked files in Select mode (with confirmation); Command-click and Shift-click select several files.
+- **Menu bar:** File → New File (⌘N) and File → Import Files… (⌘I), plus the standard Mac menus. (The shortcuts also work on an iPad with a keyboard.)
+- **Possible later addition:** dragging image files from Finder onto Add File or an album.
+
+**Feature: Photo Sources (planned, all devices)**
+- **Expected behavior:** "Add Photos" (Add File, File Screen) and the album's + offer two choices: **Photos Library** (the existing picker, with thumbnails) or **Files** (the system file browser, with thumbnail and preview views; several images can be chosen at once).
+- **Dates:** for photos from Files, the date taken is read from the image file's own camera information (e.g. Lumix JPEGs) when present; otherwise the usual manual date entry applies.
+- **Edge cases:** a file that isn't a readable image is skipped and the rest are added; the storage space check applies as for the Photos Library.
+
+**Feature: Zoom in Full Photo View (planned, all devices)**
+- **Expected behavior:** pinch (trackpad or touch screen) or double-click/double-tap to zoom into a photo, then drag to look around; double-click/double-tap again to return to the full photo. Swiping between photos works when not zoomed in.
 
 ### 7. Non-Functional Requirements
 - **Performance expectations:** File List scrolls smoothly with at least 100 entries; photo import and display stay responsive regardless of source camera's resolution (including large files from non-Apple cameras). The app launches quickly enough to feel instant on supported devices.
@@ -415,5 +430,4 @@
   - b. Allow agent to make recommendations for better design.
 
 ### 10. Open Questions (Mac transfer)
-- macOS version floor (match the user's Mac).
 - Smaller stored copies of full photos: revisit now that offloading exists.
