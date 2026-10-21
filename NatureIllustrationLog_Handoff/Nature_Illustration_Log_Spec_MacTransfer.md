@@ -93,6 +93,9 @@
   - c. Swiping a photo left deletes it, after a confirmation
   - d. Swiping a photo right ("Set as First") moves it to the front of the album, which makes it the photo shown on the File Screen (and, for the subject album, in the File List)
   - e. An empty album shows "No Photos Yet" with a prompt to tap the plus sign
+  - f. Right-click (Mac) or long-press (iPhone/iPad) a photo for Set as First and Delete (with confirmation)
+  - g. "Select" button: circles appear in front of each photo; Select All / Deselect All; a trash icon deletes the checked photos after asking ("Delete 3 photos? This can't be undone."); Cancel leaves Select mode. On the Mac the Delete key does the same as the trash icon. Button layout — iPhone/iPad: [<] … [Select] [+], while selecting [<] [Select All] [Trash] … [Cancel]; Mac (all at top right): [Select] [<] [+], while selecting [Select All] [Trash] [Cancel] [<]. Swipe actions stay on both (two-finger swipe on a Mac trackpad).
+  - Not shown for read-only files, placeholders, or older versions in Recently Replaced.
 
 #### Screen: Full Photo View
 - **Entry points:** Tapping a photo in the Photo Album screen
@@ -147,7 +150,8 @@
 - **Entry points:** "Record Photo Location" link from Add File screen, or "Edit Location" link from the File Screen
 - **Exit points:**
   - a. Cancel button in the top left corner returns to the previous screen without saving
-  - b. Done button in the top right corner saves the pin and returns to the previous screen
+  - b. Done button in the top right corner saves the pin and returns to the previous screen. Done is a solid blue button (the main action) and is dimmed until a pin is placed.
+- **Layout:** the title, Cancel/Done, and search box sit on a solid bar, and the Map/Satellite strip on a solid bar at the bottom, so controls stay readable over any map or satellite view. On iPhone/iPad the screen opens as a sheet; on the Mac it fills the whole app window, so it grows with the window (drag the window's edges or use full screen).
 - **UI elements:**
   - Textbox, "Search for a place"
   - iOS map which enables the user to pin their photo location (pinch to zoom, drag to pan)

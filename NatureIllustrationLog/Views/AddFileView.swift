@@ -79,7 +79,7 @@ struct AddFileView: View {
                 )
             }
             .notEnoughSpaceForPhotosAlert(bytesNeeded: $photoSpaceNeeded)
-            .sheet(isPresented: $isPickingLocation) {
+            .locationPickerCover(isPresented: $isPickingLocation) {
                 LocationPickerView(initialCoordinate: photoCoordinate) { coordinate in
                     photoCoordinate = coordinate
                     locationDescription = nil

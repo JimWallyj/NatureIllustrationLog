@@ -36,6 +36,32 @@ struct FileListView: View {
                     }
                 }
                 .tag(file.persistentModelID)
+                // Right-click (Mac) or long-press (iPhone/iPad).
+                .contextMenu {
+                    Button {
+                        coordinator.path.append(file)
+                    } label: {
+                        Label("Open", systemImage: "doc.text")
+                    }
+                    if !file.isReadOnly && !file.isPlaceholder {
+                        Button {
+                            export(.ownDevices, only: [file])
+                        } label: {
+                            Label("Send to My Devices", systemImage: "square.and.arrow.up")
+                        }
+                        Button {
+                            export(.readOnly, only: [file])
+                        } label: {
+                            Label("Share Read-Only", systemImage: "lock")
+                        }
+                    }
+                    Divider()
+                    Button(role: .destructive) {
+                        pendingDeleteFile = file
+                    } label: {
+                        Label("Delete", systemImage: "trash")
+                    }
+                }
                 .swipeActions {
                     Button(role: .destructive) {
                         pendingDeleteFile = file
@@ -72,11 +98,15 @@ struct FileListView: View {
         .toolbar {
             ToolbarItemGroup(placement: .topBarLeading) {
                 if isSelecting {
-                    if allSelected {
-                        Button("Deselect All") { selection.removeAll() }
-                    } else {
-                        Button("Select All") { selection = Set(files.map(\.persistentModelID)) }
+                    // .id makes the Mac's top bar redraw these as the selection changes.
+                    Group {
+                        if allSelected {
+                            Button("Deselect All") { selection.removeAll() }
+                        } else {
+                            Button("Select All") { selection = Set(files.map(\.persistentModelID)) }
+                        }
                     }
+                    .id(allSelected)
                 } else {
                     Button {
                         showingAddFile = true
@@ -85,19 +115,22 @@ struct FileListView: View {
                     }
                 }
                 Button {
-                    startExport()
+                    if isSelecting && !selection.isEmpty { startExport() }
                 } label: {
                     Image(systemName: "square.and.arrow.up")
                 }
                 .disabled(!isSelecting || selection.isEmpty)
+                .id(isSelecting && !selection.isEmpty)
 
                 if isSelecting {
                     Button {
-                        showingMultiDelete = true
+                        if !selection.isEmpty { showingMultiDelete = true }
                     } label: {
                         Image(systemName: "trash")
                     }
                     .disabled(selection.isEmpty)
+                    .keyboardShortcut(.delete, modifiers: [])   // Mac: the Delete key
+                    .id(selection.isEmpty)
                 }
             }
             ToolbarItemGroup(placement: .topBarTrailing) {
@@ -223,8 +256,8 @@ struct FileListView: View {
     }
 
     /// Writes one transfer file per selected file, then opens the share sheet.
-    private func export(_ kind: FilePackage.TransferKind) {
-        let toSend = sendableFiles
+    private func export(_ kind: FilePackage.TransferKind, only files: [SubjectFile]? = nil) {
+        let toSend = files ?? sendableFiles
         isPreparing = true
         Task {
             var folder: URL?

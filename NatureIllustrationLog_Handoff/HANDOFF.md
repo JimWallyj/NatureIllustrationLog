@@ -63,6 +63,8 @@ Everything from the first conversation, plus Phase 1 of the Mac-transfer work:
 - Setting `LSSupportsOpeningDocumentsInPlace = NO` breaks the Mac Catalyst build ("not supported on macOS"); per-SDK conditions didn't take effect while Xcode was open. Fix used: remove the setting entirely. After editing project.pbxproj outside Xcode, quit and reopen Xcode.
 - Mac Photos access: the Signing & Capabilities "Photo Library" section did not add the Mac sandbox permission; macOS silently denied access until `ENABLE_RESOURCE_ACCESS_PHOTO_LIBRARY = YES` was added to the build settings (with Xcode quit). On the Mac, "Open Settings" goes to System Settings → Privacy & Security → Photos (`SystemSettingsLink`).
 - Swipe actions are hard to discover; pair them with visible buttons or a hint.
+- Mac Catalyst top-bar buttons don't refresh their enabled/disabled state or label when selection changes (only after a window resize). Fix: give such toolbar buttons an `.id(...)` tied to the state (used in AlbumView and FileListView).
+- On the Mac, glass toolbars ignore `toolbarBackground`; the Photo Location screen hides the navigation bar and draws its own solid top bar instead.
 
 ## How the user likes to work
 - Not an Xcode expert: complete files, which folder, step-by-step Xcode instructions.

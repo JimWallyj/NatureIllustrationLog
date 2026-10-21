@@ -61,7 +61,7 @@ struct FileDetailView: View {
                 }
             }
         }
-        .sheet(isPresented: $isEditingLocation) {
+        .locationPickerCover(isPresented: $isEditingLocation) {
             LocationPickerView(initialCoordinate: currentCoordinate) { newCoordinate in
                 file.latitude = newCoordinate.latitude
                 file.longitude = newCoordinate.longitude

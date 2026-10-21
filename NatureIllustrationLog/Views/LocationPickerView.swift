@@ -78,14 +78,6 @@ struct LocationPickerView: View {
                     }
                 }
             }
-            .searchable(
-                text: $searchText,
-                placement: .navigationBarDrawer(displayMode: .always),
-                prompt: "Search for a place"
-            )
-            .onSubmit(of: .search) {
-                Task { await search() }
-            }
             .onChange(of: searchText) {
                 searchMessage = nil
             }
@@ -118,26 +110,65 @@ struct LocationPickerView: View {
                 .padding()
                 .background(.regularMaterial)
             }
-            .navigationTitle("Photo Location")
-            .navigationBarTitleDisplayMode(.inline)
-            .toolbar {
-                ToolbarItem(placement: .topBarLeading) {
+            // The app draws its own top bar (title, Cancel, Done, search) on a
+            // solid backing that matches the bottom strip, so the controls stay
+            // readable over any map or satellite view on both iPhone and Mac.
+            .toolbar(.hidden, for: .navigationBar)
+            .safeAreaInset(edge: .top) {
+                topBar
+            }
+            .onAppear {
+                authorizer.requestIfNeeded()
+            }
+        }
+    }
+
+    private var topBar: some View {
+        VStack(spacing: 10) {
+            ZStack {
+                Text("Photo Location")
+                    .font(.headline)
+                HStack {
                     Button("Cancel") { dismiss() }
-                }
-                ToolbarItem(placement: .topBarTrailing) {
+                        .buttonStyle(.bordered)
+                    Spacer()
                     Button("Done") {
                         if let selection {
                             onDone(selection)
                             dismiss()
                         }
                     }
+                    .buttonStyle(.borderedProminent)   // solid blue: the main action
                     .disabled(selection == nil)
                 }
             }
-            .onAppear {
-                authorizer.requestIfNeeded()
+
+            HStack(spacing: 6) {
+                Image(systemName: "magnifyingglass")
+                    .foregroundStyle(.secondary)
+                TextField("Search for a place", text: $searchText)
+                    .submitLabel(.search)
+                    .autocorrectionDisabled()
+                    .onSubmit {
+                        Task { await search() }
+                    }
+                if !searchText.isEmpty {
+                    Button {
+                        searchText = ""
+                    } label: {
+                        Image(systemName: "xmark.circle.fill")
+                            .foregroundStyle(.secondary)
+                    }
+                    .buttonStyle(.plain)
+                }
             }
+            .padding(.horizontal, 10)
+            .padding(.vertical, 8)
+            .background(Color(.tertiarySystemFill), in: RoundedRectangle(cornerRadius: 10))
         }
+        .padding(.horizontal)
+        .padding(.vertical, 10)
+        .background(.regularMaterial)
     }
 
     /// Looks up the typed place name (biased toward the area currently on
@@ -169,5 +200,22 @@ struct LocationPickerView: View {
         } catch {
             searchMessage = String(localized: "Search failed. Check your connection and try again.")
         }
+    }
+}
+
+extension View {
+    /// Opens the map picker as a sheet on iPhone/iPad. On the Mac it fills the
+    /// whole app window, so it grows and shrinks as the window is resized
+    /// (or goes full screen with the window's green button).
+    @ViewBuilder
+    func locationPickerCover<Content: View>(
+        isPresented: Binding<Bool>,
+        @ViewBuilder content: @escaping () -> Content
+    ) -> some View {
+        #if targetEnvironment(macCatalyst)
+        fullScreenCover(isPresented: isPresented, content: content)
+        #else
+        sheet(isPresented: isPresented, content: content)
+        #endif
     }
 }

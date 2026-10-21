@@ -1141,6 +1141,36 @@
           }
         }
       }
+    },
+    "Delete 1 photo?": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "¿Eliminar 1 foto?"
+          }
+        }
+      }
+    },
+    "Delete %lld photos?": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "¿Eliminar %lld fotos?"
+          }
+        }
+      }
+    },
+    "Open": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Abrir"
+          }
+        }
+      }
     }
   },
   "version": "1.0"
