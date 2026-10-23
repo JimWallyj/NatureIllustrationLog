@@ -15,7 +15,9 @@ struct AddFileView: View {
     @State private var fieldNotes = ""
     @State private var illustrationNotes = ""
     @State private var photos: [PickedPhoto] = []
-    @State private var manualDate = Date()
+    /// The date for photos that have none of their own. Starts empty; Save
+    /// waits until the user chooses one.
+    @State private var manualDate: Date?
     @State private var photoCoordinate: CLLocationCoordinate2D?
     @State private var locationDescription: String?
     @State private var isPickingPhotos = false
@@ -24,6 +26,7 @@ struct AddFileView: View {
     @State private var showingDuplicateNameAlert = false
     @State private var showingPhotoAccessExplainer = false
     @State private var photoSpaceNeeded: Int64?
+    @State private var isPickingFiles = false
 
     var body: some View {
         NavigationStack {
@@ -52,7 +55,11 @@ struct AddFileView: View {
                 }
                 ToolbarItem(placement: .topBarTrailing) {
                     Button("Save") { attemptSave() }
-                        .disabled(name.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty || photos.isEmpty)
+                        .disabled(
+                            name.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
+                                || photos.isEmpty
+                                || needsManualDate
+                        )
                 }
             }
             .overlay {
@@ -69,15 +76,18 @@ struct AddFileView: View {
                     },
                     onPick: { picked in
                         isImporting = false
-                        let alreadyPicked = StorageCheck.bytes(of: photos)
-                        if StorageCheck.hasRoom(forBytes: alreadyPicked + StorageCheck.bytes(of: picked)) {
-                            photos.append(contentsOf: picked)
-                        } else {
-                            photoSpaceNeeded = StorageCheck.bytes(of: picked)
-                        }
+                        add(picked)
                     }
                 )
             }
+            .imageFileImporter(
+                isPresented: $isPickingFiles,
+                onLoading: { isImporting = true },
+                onLoaded: { picked in
+                    isImporting = false
+                    add(picked)
+                }
+            )
             .notEnoughSpaceForPhotosAlert(bytesNeeded: $photoSpaceNeeded)
             .locationPickerCover(isPresented: $isPickingLocation) {
                 LocationPickerView(initialCoordinate: photoCoordinate) { coordinate in
@@ -131,9 +141,10 @@ struct AddFileView: View {
                 }
             }
 
-            Button {
-                openPhotoPicker()
-            } label: {
+            AddPhotosMenu(
+                onPhotosLibrary: openPhotoPicker,
+                onFiles: { isPickingFiles = true }
+            ) {
                 if photos.isEmpty {
                     Label("Add Photos", systemImage: "camera")
                 } else {
@@ -141,6 +152,11 @@ struct AddFileView: View {
                 }
             }
         }
+    }
+
+    /// True while some photos have no date and none has been chosen yet.
+    private var needsManualDate: Bool {
+        photos.contains(where: { $0.dateTaken == nil }) && manualDate == nil
     }
 
     @ViewBuilder
@@ -155,10 +171,30 @@ struct AddFileView: View {
                 // Photos with no date of their own (denied Photos access, or a
                 // source that doesn't record one) get the date entered here.
                 if photos.contains(where: { $0.dateTaken == nil }) {
-                    DatePicker("Date Taken", selection: $manualDate, displayedComponents: .date)
-                    Text("Photos without a date use this date.")
-                        .font(.footnote)
-                        .foregroundStyle(.secondary)
+                    if manualDate == nil {
+                        // Empty until the user chooses; Save waits for it.
+                        Button {
+                            manualDate = Date()
+                        } label: {
+                            Label("Choose Date Taken", systemImage: "calendar.badge.exclamationmark")
+                        }
+                        .foregroundStyle(.red)
+                        Text("Some photos have no date. Choose the date they were taken before saving.")
+                            .font(.footnote)
+                            .foregroundStyle(.red)
+                    } else {
+                        DatePicker(
+                            "Date Taken",
+                            selection: Binding(
+                                get: { manualDate ?? Date() },
+                                set: { manualDate = $0 }
+                            ),
+                            displayedComponents: .date
+                        )
+                        Text("Photos without a date use this date.")
+                            .font(.footnote)
+                            .foregroundStyle(.red)
+                    }
                 }
             }
         }
@@ -229,6 +265,16 @@ struct AddFileView: View {
 
     // MARK: - Actions
 
+    /// Adds picked photos (from Photos Library or Files), after the space check.
+    private func add(_ picked: [PickedPhoto]) {
+        let alreadyPicked = StorageCheck.bytes(of: photos)
+        if StorageCheck.hasRoom(forBytes: alreadyPicked + StorageCheck.bytes(of: picked)) {
+            photos.append(contentsOf: picked)
+        } else {
+            photoSpaceNeeded = StorageCheck.bytes(of: picked)
+        }
+    }
+
     private func openPhotoPicker() {
         let status = PHPhotoLibrary.authorizationStatus(for: .readWrite)
         if status == .denied || status == .restricted {
@@ -267,7 +313,7 @@ struct AddFileView: View {
             let albumPhoto = AlbumPhoto(
                 imageData: photo.data,
                 thumbnailData: photo.thumbnailData,
-                date: photo.dateTaken ?? manualDate,
+                date: photo.dateTaken ?? manualDate ?? Date(),
                 kind: .subject,
                 sortIndex: index
             )

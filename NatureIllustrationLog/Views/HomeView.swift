@@ -62,6 +62,7 @@ struct HomeView: View {
             }
             .task {
                 MacWindow.configure()
+                FilePackage.removeOldExportFolders()
                 RecentlyReplacedView.removeExpired(in: modelContext)
                 requestPhotoLibraryAccessIfNeeded()
             }

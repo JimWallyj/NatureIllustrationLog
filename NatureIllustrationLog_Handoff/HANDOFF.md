@@ -37,6 +37,11 @@ Everything from the first conversation, plus Phase 1 of the Mac-transfer work:
 - Swipe delete (iPhone) and a Remove button / Delete key / right-click (Mac) always confirm.
 - The Mac version should work and look as much like the iPhone/iPad version as practicable.
 
+## Phase 2 progress (2026-10-22)
+- Built and tested on the Mac (Mac Catalyst, macOS 27): window size/minimum, File menu (⌘N New File, ⌘I Import Files…), Photos permission, Photo Location with its own solid top bar and full-window map on the Mac, album Select + trash and right-click menus, File List right-click menus and Delete key, export fix for Mac AirDrop/Mail.
+- Step 2b (installed 2026-10-22, testing): Add Photos / album + offer Photos Library or Files; `ImageFileLoader.swift` reads EXIF dates and converts RAW to JPEG.
+- Remaining Step 2c: zoom in Full Photo View, File Screen max width on wide windows, Command/Shift-click multi-select.
+
 ## Next work
 - **Phase 2: Mac version.** Decisions to walk through one at a time: (1) how to add the Mac (Mac Catalyst vs native macOS vs "Designed for iPad"), (2) macOS floor (user tests on macOS 27; Claude suggested 27 to match the iOS rule), (3) Mac photo sources (Photos library, Finder files, drag and drop), (4) Mac layout details.
 - **Phase 3: Offload** ("Send to Mac and Free Up Space", placeholders, "On Mac" badge, image becomes optional on AlbumPhoto).
@@ -63,6 +68,8 @@ Everything from the first conversation, plus Phase 1 of the Mac-transfer work:
 - Setting `LSSupportsOpeningDocumentsInPlace = NO` breaks the Mac Catalyst build ("not supported on macOS"); per-SDK conditions didn't take effect while Xcode was open. Fix used: remove the setting entirely. After editing project.pbxproj outside Xcode, quit and reopen Xcode.
 - Mac Photos access: the Signing & Capabilities "Photo Library" section did not add the Mac sandbox permission; macOS silently denied access until `ENABLE_RESOURCE_ACCESS_PHOTO_LIBRARY = YES` was added to the build settings (with Xcode quit). On the Mac, "Open Settings" goes to System Settings → Privacy & Security → Photos (`SystemSettingsLink`).
 - Swipe actions are hard to discover; pair them with visible buttons or a hint.
+- Temporary export (.natlog) files must NOT be deleted when the share window closes: on the Mac, AirDrop and Mail read the file after the window closes (Mac → iPhone AirDrop silently did nothing). Now cleared when older than an hour (`FilePackage.removeOldExportFolders`, at launch and before each export).
+- Harmless build warning about not declaring LSSupportsOpeningDocumentsInPlace: expected, since the key is deliberately left out. Optional later: retry `[sdk=iphoneos*]`/`[sdk=iphonesimulator*]` = NO with Xcode fully quit.
 - Mac Catalyst top-bar buttons don't refresh their enabled/disabled state or label when selection changes (only after a window resize). Fix: give such toolbar buttons an `.id(...)` tied to the state (used in AlbumView and FileListView).
 - On the Mac, glass toolbars ignore `toolbarBackground`; the Photo Location screen hides the navigation bar and draws its own solid top bar instead.
 

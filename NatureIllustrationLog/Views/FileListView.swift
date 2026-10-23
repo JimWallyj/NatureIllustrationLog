@@ -280,11 +280,11 @@ struct FileListView: View {
         }
     }
 
-    /// Removes the temporary transfer files once the share sheet closes.
+    /// The share window has closed. The temporary transfer files are kept for
+    /// now (the Mac's AirDrop and Mail read them after the window closes) and
+    /// are removed later by FilePackage.removeOldExportFolders().
     private func cleanUpExports() {
-        let folder = lastExportFolder
         lastExportFolder = nil
-        if let folder { try? FileManager.default.removeItem(at: folder) }
     }
 
     private func thumbnail(for file: SubjectFile) -> some View {

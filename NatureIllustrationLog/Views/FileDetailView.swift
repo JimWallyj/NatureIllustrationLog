@@ -8,6 +8,8 @@ struct FileDetailView: View {
     @Environment(NavigationCoordinator.self) private var coordinator
     @Environment(\.dismiss) private var dismiss
     @State private var photoSpaceNeeded: Int64?
+    @State private var isPickingFiles = false
+    @State private var filesKind: AlbumKind = .subject
     @State private var isEditingLocation = false
     @State private var showingFullMap = false
     @State private var pickerTarget: AlbumKind?
@@ -96,6 +98,18 @@ struct FileDetailView: View {
                 }
             )
         }
+        .imageFileImporter(
+            isPresented: $isPickingFiles,
+            onLoading: { isImporting = true },
+            onLoaded: { picked in
+                isImporting = false
+                if StorageCheck.hasRoom(forBytes: StorageCheck.bytes(of: picked)) {
+                    file.appendPhotos(picked, kind: filesKind, in: modelContext)
+                } else {
+                    photoSpaceNeeded = StorageCheck.bytes(of: picked)
+                }
+            }
+        )
         .notEnoughSpaceForPhotosAlert(bytesNeeded: $photoSpaceNeeded)
         .fullScreenCover(item: $presentedAlbum) { kind in
             AlbumView(file: file, kind: kind)
@@ -137,9 +151,13 @@ struct FileDetailView: View {
             Text("No photos")
                 .foregroundStyle(.secondary)
         } else {
-            Button {
-                pickerTarget = .subject
-            } label: {
+            AddPhotosMenu(
+                onPhotosLibrary: { pickerTarget = .subject },
+                onFiles: {
+                    filesKind = .subject
+                    isPickingFiles = true
+                }
+            ) {
                 Label("Add Photos", systemImage: "camera")
             }
         }
@@ -161,9 +179,13 @@ struct FileDetailView: View {
                 Text("No photos")
                     .foregroundStyle(.secondary)
             } else {
-                Button {
-                    pickerTarget = .illustration
-                } label: {
+                AddPhotosMenu(
+                    onPhotosLibrary: { pickerTarget = .illustration },
+                    onFiles: {
+                        filesKind = .illustration
+                        isPickingFiles = true
+                    }
+                ) {
                     Label("Add Illustration Photos", systemImage: "paintpalette")
                 }
             }

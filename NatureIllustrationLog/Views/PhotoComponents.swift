@@ -1,5 +1,6 @@
 import SwiftUI
 import UIKit
+import UniformTypeIdentifiers
 
 /// The large first photo of an album, as shown on the File Screen.
 struct CoverPhotoView: View {
@@ -35,16 +36,21 @@ struct PhotoDateRow: View {
                 }
                 Spacer(minLength: 0)
             }
-        } else if photo.date != nil {
+        } else {
+            // One date field whether or not a date is set yet, so choosing a
+            // date in the calendar is never lost (the field isn't swapped out
+            // while its calendar is open).
             HStack(spacing: 6) {
                 Image(systemName: "calendar")
                     .foregroundStyle(.secondary)
+                if photo.date == nil {
+                    Text("Set date:")
+                        .foregroundStyle(.red)
+                }
                 DatePicker("Date", selection: dateBinding, displayedComponents: .date)
                     .labelsHidden()
                 Spacer(minLength: 0)
             }
-        } else {
-            DatePicker("Date", selection: dateBinding, displayedComponents: .date)
         }
     }
 
@@ -100,5 +106,53 @@ enum SystemSettingsLink {
         #else
         URL(string: UIApplication.openSettingsURLString)
         #endif
+    }
+}
+
+/// The "Add Photos" choices: Photos Library (the photo picker) or Files
+/// (image files from iCloud Drive, Downloads, On My iPhone, or Mac folders).
+struct AddPhotosMenu<MenuLabel: View>: View {
+    let onPhotosLibrary: () -> Void
+    let onFiles: () -> Void
+    @ViewBuilder let label: MenuLabel
+
+    var body: some View {
+        Menu {
+            Button {
+                onPhotosLibrary()
+            } label: {
+                Label("Photos Library", systemImage: "photo.on.rectangle")
+            }
+            Button {
+                onFiles()
+            } label: {
+                Label("Files", systemImage: "folder")
+            }
+        } label: {
+            label
+        }
+    }
+}
+
+extension View {
+    /// The "Files" choice: pick one or more image files. `onLoading` runs while
+    /// they're read (show the progress indicator); `onLoaded` gets the photos.
+    func imageFileImporter(
+        isPresented: Binding<Bool>,
+        onLoading: @escaping () -> Void,
+        onLoaded: @escaping ([PickedPhoto]) -> Void
+    ) -> some View {
+        fileImporter(
+            isPresented: isPresented,
+            allowedContentTypes: [.image],
+            allowsMultipleSelection: true
+        ) { result in
+            guard case .success(let urls) = result, !urls.isEmpty else { return }
+            onLoading()
+            Task {
+                let photos = await ImageFileLoader.loadPhotos(from: urls)
+                onLoaded(photos)
+            }
+        }
     }
 }

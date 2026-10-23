@@ -121,7 +121,7 @@
   - a. See 'a' through 'c', above
   - b. Photos section: an "Add Photos" button (it reads "Add More Photos" once photos have been added) opens the Photos app, where one or several photos can be chosen at once. Chosen photos appear as small thumbnails, each with an x to remove it before saving. The first photo is the one shown first on the File Screen and in the File List.
   - c. Textbox for the file name. Textbox label is named "Subject File Name"
-  - d. Photo Date field, "Date of Photo" — auto-filled from the first photo's metadata when available, once photos are selected. Each photo keeps its own date. If any photo has no date (denied Photos access, or a camera that doesn't record it), a date field appears (today's date by default), and the date shown there is used for those photos.
+  - d. Photo Date field, "Date of Photo" — auto-filled from the first photo's metadata when available, once photos are selected. Each photo keeps its own date. If any photo has no date (denied Photos access, or a camera or file that doesn't record it), a red "Choose Date Taken" button appears with the note "Some photos have no date. Choose the date they were taken before saving." Save stays disabled until a date is chosen; the chosen date (shown with the red note "Photos without a date use this date.") is used for those photos. In albums and on the File Screen, a photo without a date shows a red "Set date:" label before its date field until a date is chosen.
   - e. Textbox for user field notes with its title is named "Field Notes"
   - f. Textbox for initial notes and plans for the user's illustration project with its title named "Illustration Project Notes"
 - **User actions & resulting behavior:**
@@ -323,9 +323,10 @@
 - **Menu bar:** File → New File (⌘N) and File → Import Files… (⌘I), plus the standard Mac menus. (The shortcuts also work on an iPad with a keyboard.)
 - **Possible later addition:** dragging image files from Finder onto Add File or an album.
 
-**Feature: Photo Sources (planned, all devices)**
+**Feature: Photo Sources (built in Step 2b, all devices)**
 - **Expected behavior:** "Add Photos" (Add File, File Screen) and the album's + offer two choices: **Photos Library** (the existing picker, with thumbnails) or **Files** (the system file browser, with thumbnail and preview views; several images can be chosen at once).
 - **Dates:** for photos from Files, the date taken is read from the image file's own camera information (e.g. Lumix JPEGs) when present; otherwise the usual manual date entry applies.
+- **Format:** like Photos Library photos, each is stored as a full-size JPEG (up to 8192 px on the long side) plus a ~400 px thumbnail; camera RAW files are converted to JPEG. Spanish labels: "Fototeca" and "Archivos" (Apple's own names).
 - **Edge cases:** a file that isn't a readable image is skipped and the rest are added; the storage space check applies as for the Photos Library.
 
 **Feature: Zoom in Full Photo View (planned, all devices)**

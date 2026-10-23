@@ -17,6 +17,7 @@ struct AlbumView: View {
     @State private var viewing: ViewerItem?
     @State private var pendingDelete: AlbumPhoto?
     @State private var photoSpaceNeeded: Int64?
+    @State private var isPickingFiles = false
 
     // Select mode
     @State private var isSelecting = false
@@ -111,6 +112,18 @@ struct AlbumView: View {
                     }
                 )
             }
+            .imageFileImporter(
+                isPresented: $isPickingFiles,
+                onLoading: { isImporting = true },
+                onLoaded: { picked in
+                    isImporting = false
+                    if StorageCheck.hasRoom(forBytes: StorageCheck.bytes(of: picked)) {
+                        file.appendPhotos(picked, kind: kind, in: modelContext)
+                    } else {
+                        photoSpaceNeeded = StorageCheck.bytes(of: picked)
+                    }
+                }
+            )
             .notEnoughSpaceForPhotosAlert(bytesNeeded: $photoSpaceNeeded)
             .fullScreenCover(item: $viewing) { item in
                 FullPhotoView(photos: photos, startIndex: item.id)
@@ -206,10 +219,12 @@ struct AlbumView: View {
         }
     }
 
+    /// "+": Photos Library or Files.
     private var addButton: some View {
-        Button {
-            isPickingPhotos = true
-        } label: {
+        AddPhotosMenu(
+            onPhotosLibrary: { isPickingPhotos = true },
+            onFiles: { isPickingFiles = true }
+        ) {
             Image(systemName: "plus")
         }
     }

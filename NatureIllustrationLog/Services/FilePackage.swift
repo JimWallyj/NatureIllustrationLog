@@ -112,10 +112,28 @@ enum FilePackage {
 
     /// A new, empty folder in the app's temporary area to hold one batch of exports.
     static func makeExportFolder() throws -> URL {
+        removeOldExportFolders()
         let folder = FileManager.default.temporaryDirectory
             .appendingPathComponent("Export-\(UUID().uuidString)", isDirectory: true)
         try FileManager.default.createDirectory(at: folder, withIntermediateDirectories: true)
         return folder
+    }
+
+    /// Deletes temporary export folders more than an hour old. Exports are not
+    /// deleted when the share window closes, because on the Mac AirDrop and Mail
+    /// read the file only after the share window has closed.
+    static func removeOldExportFolders(olderThan age: TimeInterval = 3600) {
+        let fm = FileManager.default
+        let temp = fm.temporaryDirectory
+        guard let items = try? fm.contentsOfDirectory(
+            at: temp, includingPropertiesForKeys: [.creationDateKey]
+        ) else { return }
+        for item in items where item.lastPathComponent.hasPrefix("Export-") {
+            let created = (try? item.resourceValues(forKeys: [.creationDateKey]))?.creationDate ?? .distantPast
+            if Date.now.timeIntervalSince(created) > age {
+                try? fm.removeItem(at: item)
+            }
+        }
     }
 
     /// Writes one file's package into `folder` and returns its location.
