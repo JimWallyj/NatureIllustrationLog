@@ -34,6 +34,8 @@ final class ImportManager {
         let id = UUID()
         var imported = 0
         var updated = 0
+        /// Placeholders replaced by their full file sent back from the Mac.
+        var restoredFromMac = 0
         var skipped = 0
         var unreadable = 0
     }
@@ -155,9 +157,18 @@ final class ImportManager {
                     // The current version moves to Recently Replaced (kept 30 days);
                     // the incoming copy takes its place with the same hidden ID.
                     if let existing, canUpdate {
-                        existing.replacedDate = .now
-                        insert(package, named: name, into: context)
-                        result.updated += 1
+                        if existing.isPlaceholder {
+                            // The full file is back from the Mac: the placeholder
+                            // is simply removed (nothing to keep in Recently Replaced).
+                            context.delete(existing)
+                            try? context.save()   // so its hidden ID is free for the full file
+                            insert(package, named: name, into: context)
+                            result.restoredFromMac += 1
+                        } else {
+                            existing.replacedDate = .now
+                            insert(package, named: name, into: context)
+                            result.updated += 1
+                        }
                         await Task.yield()
                         continue
                     }

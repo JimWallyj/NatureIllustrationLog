@@ -41,8 +41,10 @@ Everything from the first conversation, plus Phase 1 of the Mac-transfer work:
 - Built and tested on the Mac (Mac Catalyst, macOS 27): window size/minimum, File menu (⌘N New File, ⌘I Import Files…), Photos permission, Photo Location with its own solid top bar and full-window map on the Mac, album Select + trash and right-click menus, File List right-click menus and Delete key, export fix for Mac AirDrop/Mail.
 - Step 2b (installed 2026-10-22, testing): Add Photos / album + offer Photos Library or Files; `ImageFileLoader.swift` reads EXIF dates and converts RAW to JPEG.
 - Step 2b tested; dates now use `DateChoiceSheet` (Done accepts today; Save waits for a date in Add File).
-- Step 2c (installed 2026-10-25, testing): zoom in Full Photo View (`ZoomableImageView`, UIScrollView-based); File Screen max width 820 on wide windows; Select mode toggles each row independently (custom `SelectionCircle`, no List selection/editMode) in File List and albums — replaces Command/Shift-click.
-- After Phase 2: Phase 3 (offload), then the User Manual (notes in the Project's User_Manual_Notes.md).
+- **Phase 2 complete (tested 2026-10-25 on Mac and iPhone).**
+- Step 2c: zoom in Full Photo View (`ZoomableImageView`, UIScrollView-based); File Screen max width 820 on wide windows; Select mode toggles each row independently (custom `SelectionCircle`, no List selection/editMode) in File List and albums — replaces Command/Shift-click.
+- **Phase 3 (offload) complete — tested 2026-10-26 on iPhone and Mac:** `AlbumPhoto.imageData` is now optional; offload = export (ownDevices) + "Has this file arrived on your Mac?" → Yes removes full photos and sets `isPlaceholder`; `OnMacBadge` / `OnMacNote`; Update from the Mac deletes the placeholder and inserts the full file (`restoredFromMac` in the summary). Offload is hidden on Mac Catalyst (`FileListView.canOffload`).
+- Then the User Manual (notes in the Project's User_Manual_Notes.md).
 
 ## Next work
 - **Phase 2: Mac version.** Decisions to walk through one at a time: (1) how to add the Mac (Mac Catalyst vs native macOS vs "Designed for iPad"), (2) macOS floor (user tests on macOS 27; Claude suggested 27 to match the iOS rule), (3) Mac photo sources (Photos library, Finder files, drag and drop), (4) Mac layout details.
@@ -70,6 +72,7 @@ Everything from the first conversation, plus Phase 1 of the Mac-transfer work:
 - Setting `LSSupportsOpeningDocumentsInPlace = NO` breaks the Mac Catalyst build ("not supported on macOS"); per-SDK conditions didn't take effect while Xcode was open. Fix used: remove the setting entirely. After editing project.pbxproj outside Xcode, quit and reopen Xcode.
 - Mac Photos access: the Signing & Capabilities "Photo Library" section did not add the Mac sandbox permission; macOS silently denied access until `ENABLE_RESOURCE_ACCESS_PHOTO_LIBRARY = YES` was added to the build settings (with Xcode quit). On the Mac, "Open Settings" goes to System Settings → Privacy & Security → Photos (`SystemSettingsLink`).
 - Compact (pop-up) DatePicker problems: it can't accept the already-highlighted date (today), and on the Mac its pop-up can stay open so `dismiss()` closes the pop-up instead of the sheet (Save didn't close Add File). Photo dates now use `DateChoiceSheet` (graphical calendar + Cancel/Done) in PhotoComponents.swift.
+- iOS share sheet: AirDrop does not reliably report "completed" to the app (and the sheet can close before the result arrives). The offload therefore always asks "Has this file arrived on your Mac?" when the share window closes.
 - Swipe actions are hard to discover; pair them with visible buttons or a hint.
 - Temporary export (.natlog) files must NOT be deleted when the share window closes: on the Mac, AirDrop and Mail read the file after the window closes (Mac → iPhone AirDrop silently did nothing). Now cleared when older than an hour (`FilePackage.removeOldExportFolders`, at launch and before each export).
 - Harmless build warning about not declaring LSSupportsOpeningDocumentsInPlace: expected, since the key is deliberately left out. Optional later: retry `[sdk=iphoneos*]`/`[sdk=iphonesimulator*]` = NO with Xcode fully quit.

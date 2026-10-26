@@ -30,6 +30,9 @@ struct ImportOverlay: View {
                         } else {
                             Text("Imported: \(summary.imported) · Skipped: \(summary.skipped)")
                         }
+                        if summary.restoredFromMac > 0 {
+                            Text("Full files brought back from the Mac: \(summary.restoredFromMac)")
+                        }
                         if summary.updated > 0 {
                             Text("Updated: \(summary.updated). The older versions were moved to Recently Replaced (gear icon on Home) for 30 days.")
                         }

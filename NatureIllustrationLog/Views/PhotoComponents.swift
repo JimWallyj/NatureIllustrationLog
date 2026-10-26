@@ -7,7 +7,17 @@ struct CoverPhotoView: View {
     let photo: AlbumPhoto
 
     var body: some View {
-        if let image = UIImage(data: photo.imageData) {
+        if photo.imageData == nil, let thumbnail = UIImage(data: photo.thumbnailData) {
+            // Placeholder: the full photo is on the Mac; show the small copy.
+            Image(uiImage: thumbnail)
+                .resizable()
+                .scaledToFit()
+                .clipShape(RoundedRectangle(cornerRadius: 12))
+                .overlay(alignment: .bottom) {
+                    OnMacNote()
+                        .padding(8)
+                }
+        } else if let data = photo.imageData, let image = UIImage(data: data) {
             Image(uiImage: image)
                 .resizable()
                 .scaledToFit()
@@ -209,5 +219,28 @@ struct SelectionCircle: View {
         Image(systemName: isSelected ? "checkmark.circle.fill" : "circle")
             .font(.title3)
             .foregroundStyle(isSelected ? Color.accentColor : Color.secondary)
+    }
+}
+
+/// "Full-size photo is on your Mac." — shown over a placeholder's photos.
+struct OnMacNote: View {
+    var body: some View {
+        Label("Full-size photo is on your Mac.", systemImage: "laptopcomputer")
+            .font(.footnote)
+            .padding(.horizontal, 10)
+            .padding(.vertical, 6)
+            .background(.regularMaterial, in: Capsule())
+    }
+}
+
+/// The small "On Mac" badge shown next to an offloaded file's name.
+struct OnMacBadge: View {
+    var body: some View {
+        Label("On Mac", systemImage: "laptopcomputer")
+            .font(.caption)
+            .padding(.horizontal, 6)
+            .padding(.vertical, 2)
+            .background(Color.accentColor.opacity(0.15), in: Capsule())
+            .foregroundStyle(Color.accentColor)
     }
 }

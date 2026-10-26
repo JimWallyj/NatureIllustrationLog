@@ -21,6 +21,13 @@ struct FileListView: View {
     @State private var lastExportFolder: URL?
     @State private var showingMultiDelete = false
 
+    // Offload ("Send to Mac and Free Up Space", iPhone/iPad only)
+    @State private var offloadCandidates: [PersistentIdentifier] = []
+    @State private var offloadSendCompleted = false
+    @State private var shareResultReceived = false
+    @State private var shareWindowClosed = false
+    @State private var showingArrivalQuestion = false
+
     var body: some View {
         List {
             ForEach(files) { file in
@@ -58,6 +65,13 @@ struct FileListView: View {
                             export(.readOnly, only: [file])
                         } label: {
                             Label("Share Read-Only", systemImage: "lock")
+                        }
+                        if Self.canOffload {
+                            Button {
+                                export(.ownDevices, only: [file], offload: true)
+                            } label: {
+                                Label("Send to Mac and Free Up Space", systemImage: "laptopcomputer.and.arrow.down")
+                            }
                         }
                     }
                     Divider()
@@ -173,7 +187,11 @@ struct FileListView: View {
                 pendingDeleteFile = nil
             }
         } message: {
-            Text("This removes the photo and notes for this file. This can't be undone.")
+            if pendingDeleteFile?.isPlaceholder == true {
+                Text("This removes the placeholder from this device. The full file on your Mac is not affected.")
+            } else {
+                Text("This removes the photo and notes for this file. This can't be undone.")
+            }
         }
         .confirmationDialog(
             selectedFiles.count == 1 ? Text("Delete 1 file?") : Text("Delete \(selectedFiles.count) files?"),
@@ -192,14 +210,29 @@ struct FileListView: View {
         .confirmationDialog("Send Files", isPresented: $showingExportOptions, titleVisibility: .visible) {
             Button("Send to My Devices") { export(.ownDevices) }
             Button("Share Read-Only") { export(.readOnly) }
+            if Self.canOffload {
+                Button("Send to Mac and Free Up Space") { export(.ownDevices, offload: true) }
+            }
             Button("Cancel", role: .cancel) {}
         } message: {
             let skipped = selectedFiles.count - sendableFiles.count
             if skipped > 0 {
                 Text("\(skipped) of the \(selectedFiles.count) selected files can't be sent (read-only or already on your Mac). Send the other \(sendableFiles.count)?")
+            } else if Self.canOffload {
+                Text("Send to My Devices keeps the files editable. Share Read-Only lets others view them but not change them. Send to Mac and Free Up Space sends them to your Mac, then keeps only a lightweight copy here.")
             } else {
                 Text("Send to My Devices keeps the files editable. Share Read-Only lets others view them but not change them.")
             }
+        }
+        // After an offload send: remove the full photos only once the user confirms.
+        .alert(
+            offloadCandidates.count == 1 ? Text("Has this file arrived on your Mac?") : Text("Have these files arrived on your Mac?"),
+            isPresented: $showingArrivalQuestion
+        ) {
+            Button("Yes") { finishOffload() }
+            Button("Not Yet", role: .cancel) { offloadCandidates = [] }
+        } message: {
+            Text("Choose Yes only after checking that it's on your Mac. The full-size photos will then be removed from this device; the name, notes, dates, location, and small thumbnails stay here.")
         }
         .alert("Can't Send Files", isPresented: $showingCantSend) {
             Button("OK", role: .cancel) {}
@@ -216,6 +249,9 @@ struct FileListView: View {
                 if completed {
                     endSelecting()
                 }
+                offloadSendCompleted = completed
+                shareResultReceived = true
+                resolveOffloadIfReady()
             }
             .presentationDetents([.medium, .large])
         }
@@ -247,6 +283,9 @@ struct FileListView: View {
         HStack(spacing: 12) {
             thumbnail(for: file)
             Text(file.name)
+            if file.isPlaceholder {
+                OnMacBadge()
+            }
             if file.isReadOnly {
                 Image(systemName: "lock.fill")
                     .font(.caption)
@@ -279,8 +318,12 @@ struct FileListView: View {
     }
 
     /// Writes one transfer file per selected file, then opens the share sheet.
-    private func export(_ kind: FilePackage.TransferKind, only files: [SubjectFile]? = nil) {
+    private func export(_ kind: FilePackage.TransferKind, only files: [SubjectFile]? = nil, offload: Bool = false) {
         let toSend = files ?? sendableFiles
+        offloadCandidates = offload ? toSend.map(\.persistentModelID) : []
+        offloadSendCompleted = false
+        shareResultReceived = false
+        shareWindowClosed = false
         isPreparing = true
         Task {
             var folder: URL?
@@ -308,6 +351,43 @@ struct FileListView: View {
     /// are removed later by FilePackage.removeOldExportFolders().
     private func cleanUpExports() {
         lastExportFolder = nil
+        shareWindowClosed = true
+        resolveOffloadIfReady()
+    }
+
+    /// For an offload, asks "Has this file arrived on your Mac?" once the share
+    /// window has closed. iOS doesn't reliably report whether an AirDrop was
+    /// sent, so the app always asks; the user's "Yes" is the confirmation, and
+    /// "Not Yet" (e.g. after cancelling) removes nothing.
+    private func resolveOffloadIfReady() {
+        guard !offloadCandidates.isEmpty, shareWindowClosed, !showingArrivalQuestion else { return }
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.4) {
+            if !offloadCandidates.isEmpty {
+                showingArrivalQuestion = true
+            }
+        }
+    }
+
+    /// Offloading is for freeing space on iPhone/iPad; the Mac keeps full files.
+    static var canOffload: Bool {
+        #if targetEnvironment(macCatalyst)
+        false
+        #else
+        true
+        #endif
+    }
+
+    /// "Yes, it arrived": remove the full-size photos and keep a read-only
+    /// placeholder (name, notes, dates, location, thumbnails) with an "On Mac" badge.
+    private func finishOffload() {
+        for file in files where offloadCandidates.contains(file.persistentModelID) {
+            for photo in file.photos {
+                photo.imageData = nil
+            }
+            file.isPlaceholder = true
+        }
+        offloadCandidates = []
+        try? modelContext.save()
     }
 
     private func thumbnail(for file: SubjectFile) -> some View {

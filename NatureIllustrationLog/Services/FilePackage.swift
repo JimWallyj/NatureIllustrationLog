@@ -144,7 +144,8 @@ enum FilePackage {
 
         for album in [AlbumKind.subject, AlbumKind.illustration] {
             for (position, photo) in file.album(album).enumerated() {
-                let image = photo.imageData
+                // A placeholder has no full photo; it isn't sent, but fall back safely.
+                let image = photo.imageData ?? photo.thumbnailData
                 let thumbnail = photo.thumbnailData
                 entries.append(PhotoEntry(
                     album: album.rawValue,

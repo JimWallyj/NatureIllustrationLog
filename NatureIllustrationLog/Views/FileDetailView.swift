@@ -23,6 +23,10 @@ struct FileDetailView: View {
                     Label("Recently Replaced: an older version kept for 30 days. Use Restore or Delete Now at the bottom of the screen.", systemImage: "clock.arrow.circlepath")
                         .font(.subheadline)
                         .foregroundStyle(.secondary)
+                } else if file.isPlaceholder {
+                    Label("On Mac: the full-size photos are on your Mac. To work on this file here again, send it from the Mac with Send to My Devices and choose Update This File.", systemImage: "laptopcomputer")
+                        .font(.subheadline)
+                        .foregroundStyle(.secondary)
                 } else if file.isReadOnly {
                     Label("Read-Only: shared with you. You can view this file but not change it.", systemImage: "lock.fill")
                         .font(.subheadline)

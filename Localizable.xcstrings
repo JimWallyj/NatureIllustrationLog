@@ -1221,6 +1221,126 @@
           }
         }
       }
+    },
+    "Send to Mac and Free Up Space": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Enviar a la Mac y liberar espacio"
+          }
+        }
+      }
+    },
+    "Send to My Devices keeps the files editable. Share Read-Only lets others view them but not change them. Send to Mac and Free Up Space sends them to your Mac, then keeps only a lightweight copy here.": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Enviar a mis dispositivos mantiene los archivos editables. Compartir solo lectura permite que otras personas los vean, pero no los cambien. Enviar a la Mac y liberar espacio los envía a tu Mac y deja aquí solo una copia ligera."
+          }
+        }
+      }
+    },
+    "Has this file arrived on your Mac?": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "¿Llegó este archivo a tu Mac?"
+          }
+        }
+      }
+    },
+    "Have these files arrived on your Mac?": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "¿Llegaron estos archivos a tu Mac?"
+          }
+        }
+      }
+    },
+    "Choose Yes only after checking that it's on your Mac. The full-size photos will then be removed from this device; the name, notes, dates, location, and small thumbnails stay here.": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Elige Sí solo después de comprobar que está en tu Mac. Entonces se eliminarán de este dispositivo las fotos en tamaño completo; el nombre, las notas, las fechas, la ubicación y las miniaturas se quedan aquí."
+          }
+        }
+      }
+    },
+    "Yes": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sí"
+          }
+        }
+      }
+    },
+    "Not Yet": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Todavía no"
+          }
+        }
+      }
+    },
+    "On Mac": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "En la Mac"
+          }
+        }
+      }
+    },
+    "Full-size photo is on your Mac.": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "La foto en tamaño completo está en tu Mac."
+          }
+        }
+      }
+    },
+    "This removes the placeholder from this device. The full file on your Mac is not affected.": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Esto elimina la copia ligera de este dispositivo. El archivo completo en tu Mac no se verá afectado."
+          }
+        }
+      }
+    },
+    "On Mac: the full-size photos are on your Mac. To work on this file here again, send it from the Mac with Send to My Devices and choose Update This File.": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "En la Mac: las fotos en tamaño completo están en tu Mac. Para volver a trabajar en este archivo aquí, envíalo desde la Mac con Enviar a mis dispositivos y elige Actualizar este archivo."
+          }
+        }
+      }
+    },
+    "Full files brought back from the Mac: %lld": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Archivos completos recuperados de la Mac: %lld"
+          }
+        }
+      }
     }
   },
   "version": "1.0"

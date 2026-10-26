@@ -50,7 +50,13 @@ private struct FullPhotoPage: View {
 
     var body: some View {
         ZStack {
-            if let image {
+            if photo.imageData == nil, let image {
+                ZoomableImageView(image: image)
+                    .overlay(alignment: .bottom) {
+                        OnMacNote()
+                            .padding(.bottom, 40)
+                    }
+            } else if let image {
                 ZoomableImageView(image: image)
             } else {
                 ProgressView()
@@ -59,7 +65,9 @@ private struct FullPhotoPage: View {
         }
         .onAppear {
             if image == nil {
-                image = UIImage(data: photo.imageData)
+                // Placeholder (offloaded to the Mac): only the thumbnail is here.
+                image = photo.imageData.flatMap { UIImage(data: $0) }
+                    ?? UIImage(data: photo.thumbnailData)
             }
         }
         .onDisappear {

@@ -13,7 +13,8 @@ enum AlbumKind: String, Identifiable {
 @Model
 final class AlbumPhoto {
     /// The full-size photo, copied into the app's own storage.
-    @Attribute(.externalStorage) var imageData: Data
+    /// Removed (nil) when the file is offloaded to the Mac; the thumbnail stays.
+    @Attribute(.externalStorage) var imageData: Data?
 
     /// A small copy (about 400 px on the long side) used by lists and grids so
     /// they scroll smoothly even when the full-size photos are large camera files.

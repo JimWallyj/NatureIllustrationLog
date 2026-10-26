@@ -303,8 +303,11 @@
 - **Expected behavior:** Update replaces a file with a newer copy of the same file (same hidden ID) from the user's own device. The older version is kept in Recently Replaced for 30 days and can be restored. Right after an Update, a short message says: "The older version was moved to Recently Replaced (gear icon on Home) for 30 days."
 - **Edge cases:** the incoming copy is older than the device's copy (warning, user decides); restoring when the name is now taken (Name Conflict choices).
 
-**Feature: Offload to Mac (planned)**
+**Feature: Offload to Mac (built in Phase 3; iPhone/iPad only)**
 - **Expected behavior:** the user sends a file to their Mac and frees space on the iPhone/iPad. After the send finishes, the app asks "Has this file arrived on your Mac?" (Yes / Not Yet). Only after the user taps Yes are the full-size photos removed and the file becomes a read-only placeholder with an "On Mac" badge. Sending the file back from the Mac and choosing Update replaces the placeholder with the full file.
+- **Where:** iPhone/iPad only (the Mac keeps full files): the File List's Share choices ("Send to Mac and Free Up Space") and the long-press menu on a file. Sent as "Send to My Devices", so the files arrive on the Mac complete and editable.
+- **Placeholder display:** an "On Mac" badge in the File List; on the File Screen an "On Mac" line explains how to bring the full file back; photos show their thumbnails with "Full-size photo is on your Mac." (also in Full Photo View); nothing can be edited.
+- **Bringing it back:** sending the file from the Mac with Send to My Devices and choosing Update This File replaces the placeholder with the full file (the placeholder is removed, not kept in Recently Replaced); the import summary says "Full files brought back from the Mac: n".
 - **Edge cases:** the export fails or is cancelled, or the user taps Not Yet (nothing is removed; the file stays a full file and can be offloaded again later); the user deletes the placeholder (only the placeholder is removed; the Mac copy is unaffected).
 
 **Feature: Storage Space Check (planned)**
