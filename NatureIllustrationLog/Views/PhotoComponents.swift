@@ -22,6 +22,7 @@ struct PhotoDateRow: View {
     @Bindable var photo: AlbumPhoto
     /// False for read-only files: the date is shown but can't be changed.
     var isEditable: Bool = true
+    @State private var showingDateChoice = false
 
     var body: some View {
         if !isEditable {
@@ -37,31 +38,73 @@ struct PhotoDateRow: View {
                 Spacer(minLength: 0)
             }
         } else {
-            // One date field whether or not a date is set yet, so choosing a
-            // date in the calendar is never lost (the field isn't swapped out
-            // while its calendar is open).
+            // Tap the date (or the red "Set date") to open the date panel.
             HStack(spacing: 6) {
-                Image(systemName: "calendar")
-                    .foregroundStyle(.secondary)
-                if photo.date == nil {
-                    Text("Set date:")
-                        .foregroundStyle(.red)
+                Button {
+                    showingDateChoice = true
+                } label: {
+                    HStack(spacing: 6) {
+                        Image(systemName: "calendar")
+                        if let date = photo.date {
+                            Text(date, format: .dateTime.year().month(.abbreviated).day())
+                        } else {
+                            Text("Set date")
+                                .foregroundStyle(.red)
+                        }
+                    }
                 }
-                DatePicker("Date", selection: dateBinding, displayedComponents: .date)
-                    .labelsHidden()
+                .buttonStyle(.borderless)
                 Spacer(minLength: 0)
+            }
+            .sheet(isPresented: $showingDateChoice) {
+                DateChoiceSheet(title: "Date Taken", initialDate: photo.date ?? Date()) { chosen in
+                    photo.date = chosen
+                    photo.file?.touch()
+                }
             }
         }
     }
+}
 
-    private var dateBinding: Binding<Date> {
-        Binding(
-            get: { photo.date ?? Date() },
-            set: {
-                photo.date = $0
-                photo.file?.touch()
-            }
-        )
+/// A small panel with a full calendar and Cancel / Done. Done uses whatever
+/// date is showing — including today — which the pop-up date field can't do
+/// (it only reports a change, and on the Mac it can leave its pop-up open).
+struct DateChoiceSheet: View {
+    let title: LocalizedStringKey
+    let onDone: (Date) -> Void
+
+    @Environment(\.dismiss) private var dismiss
+    @State private var date: Date
+
+    init(title: LocalizedStringKey, initialDate: Date, onDone: @escaping (Date) -> Void) {
+        self.title = title
+        self.onDone = onDone
+        _date = State(initialValue: initialDate)
+    }
+
+    var body: some View {
+        NavigationStack {
+            DatePicker("Date", selection: $date, displayedComponents: .date)
+                .datePickerStyle(.graphical)
+                .labelsHidden()
+                .padding()
+                .navigationTitle(title)
+                .navigationBarTitleDisplayMode(.inline)
+                .toolbar {
+                    ToolbarItem(placement: .cancellationAction) {
+                        Button("Cancel") { dismiss() }
+                    }
+                    ToolbarItem(placement: .confirmationAction) {
+                        Button("Done") {
+                            onDone(date)
+                            dismiss()
+                        }
+                        .buttonStyle(.borderedProminent)
+                    }
+                }
+        }
+        .frame(minWidth: 340, minHeight: 420)
+        .presentationDetents([.medium, .large])
     }
 }
 

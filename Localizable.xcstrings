@@ -1192,32 +1192,32 @@
         }
       }
     },
-    "Set date:": {
-      "localizations": {
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Indica la fecha:"
-          }
-        }
-      }
-    },
-    "Choose Date Taken": {
-      "localizations": {
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Elegir fecha de captura"
-          }
-        }
-      }
-    },
     "Some photos have no date. Choose the date they were taken before saving.": {
       "localizations": {
         "es": {
           "stringUnit": {
             "state": "translated",
             "value": "Algunas fotos no tienen fecha. Elige la fecha en que se tomaron antes de guardar."
+          }
+        }
+      }
+    },
+    "Set date": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Indicar fecha"
+          }
+        }
+      }
+    },
+    "Choose Date": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Elegir fecha"
           }
         }
       }

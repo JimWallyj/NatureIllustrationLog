@@ -18,6 +18,7 @@ struct AddFileView: View {
     /// The date for photos that have none of their own. Starts empty; Save
     /// waits until the user chooses one.
     @State private var manualDate: Date?
+    @State private var showingManualDateChoice = false
     @State private var photoCoordinate: CLLocationCoordinate2D?
     @State private var locationDescription: String?
     @State private var isPickingPhotos = false
@@ -89,6 +90,11 @@ struct AddFileView: View {
                 }
             )
             .notEnoughSpaceForPhotosAlert(bytesNeeded: $photoSpaceNeeded)
+            .sheet(isPresented: $showingManualDateChoice) {
+                DateChoiceSheet(title: "Date Taken", initialDate: manualDate ?? Date()) { chosen in
+                    manualDate = chosen
+                }
+            }
             .locationPickerCover(isPresented: $isPickingLocation) {
                 LocationPickerView(initialCoordinate: photoCoordinate) { coordinate in
                     photoCoordinate = coordinate
@@ -171,29 +177,31 @@ struct AddFileView: View {
                 // Photos with no date of their own (denied Photos access, or a
                 // source that doesn't record one) get the date entered here.
                 if photos.contains(where: { $0.dateTaken == nil }) {
-                    if manualDate == nil {
-                        // Empty until the user chooses; Save waits for it.
-                        Button {
-                            manualDate = Date()
-                        } label: {
-                            Label("Choose Date Taken", systemImage: "calendar.badge.exclamationmark")
+                    // Empty until the user chooses (Save waits for it). Tapping
+                    // opens the date panel; Done accepts any date, today included.
+                    Button {
+                        showingManualDateChoice = true
+                    } label: {
+                        HStack {
+                            Text("Date Taken")
+                                .foregroundStyle(.primary)
+                            Spacer()
+                            if let manualDate {
+                                Text(manualDate, format: .dateTime.year().month(.abbreviated).day())
+                            } else {
+                                Text("Choose Date")
+                                    .foregroundStyle(.red)
+                            }
                         }
-                        .foregroundStyle(.red)
+                    }
+                    if manualDate == nil {
                         Text("Some photos have no date. Choose the date they were taken before saving.")
                             .font(.footnote)
                             .foregroundStyle(.red)
                     } else {
-                        DatePicker(
-                            "Date Taken",
-                            selection: Binding(
-                                get: { manualDate ?? Date() },
-                                set: { manualDate = $0 }
-                            ),
-                            displayedComponents: .date
-                        )
                         Text("Photos without a date use this date.")
                             .font(.footnote)
-                            .foregroundStyle(.red)
+                            .foregroundStyle(.secondary)
                     }
                 }
             }
