@@ -319,7 +319,8 @@
 - **Window:** opens at about 1100 × 800, resizable down to about 700 × 550, full screen supported.
 - **File Screen on a wide window:** the same single column, centered with a maximum width so notes don't stretch; photo and map display large.
 - **Right-click menus:** on a file in the File List (Open, Send to My Devices, Share Read-Only, Delete) and on a photo in an album (Set as First, Delete). On iPhone/iPad the same menus appear on long-press.
-- **Keyboard:** the Delete key deletes the checked files in Select mode (with confirmation); Command-click and Shift-click select several files.
+- **Keyboard:** the Delete key deletes the checked files (or photos) in Select mode (with confirmation).
+- **Select mode (all devices, File List and albums):** each click/tap on a row checks or unchecks that row only, independently, like checkboxes; no Shift- or Command-click needed (this replaces the Mac's usual click-to-select-one behavior).
 - **Menu bar:** File → New File (⌘N) and File → Import Files… (⌘I), plus the standard Mac menus. (The shortcuts also work on an iPad with a keyboard.)
 - **Possible later addition:** dragging image files from Finder onto Add File or an album.
 
@@ -329,7 +330,7 @@
 - **Format:** like Photos Library photos, each is stored as a full-size JPEG (up to 8192 px on the long side) plus a ~400 px thumbnail; camera RAW files are converted to JPEG. Spanish labels: "Fototeca" and "Archivos" (Apple's own names).
 - **Edge cases:** a file that isn't a readable image is skipped and the rest are added; the storage space check applies as for the Photos Library.
 
-**Feature: Zoom in Full Photo View (planned, all devices)**
+**Feature: Zoom in Full Photo View (built in Step 2c, all devices)**
 - **Expected behavior:** pinch (trackpad or touch screen) or double-click/double-tap to zoom into a photo, then drag to look around; double-click/double-tap again to return to the full photo. Swiping between photos works when not zoomed in.
 
 ### 7. Non-Functional Requirements

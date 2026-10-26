@@ -22,20 +22,25 @@ struct FileListView: View {
     @State private var showingMultiDelete = false
 
     var body: some View {
-        List(selection: $selection) {
+        List {
             ForEach(files) { file in
-                NavigationLink(value: file) {
-                    HStack(spacing: 12) {
-                        thumbnail(for: file)
-                        Text(file.name)
-                        if file.isReadOnly {
-                            Image(systemName: "lock.fill")
-                                .font(.caption)
-                                .foregroundStyle(.secondary)
+                Group {
+                    if isSelecting {
+                        // Select mode: each click checks or unchecks this file
+                        // only (no Shift or Command needed, on iPhone and Mac).
+                        HStack(spacing: 12) {
+                            SelectionCircle(isSelected: selection.contains(file.persistentModelID))
+                            fileRow(file)
+                            Spacer(minLength: 0)
+                        }
+                        .contentShape(Rectangle())
+                        .onTapGesture { toggleSelection(file.persistentModelID) }
+                    } else {
+                        NavigationLink(value: file) {
+                            fileRow(file)
                         }
                     }
                 }
-                .tag(file.persistentModelID)
                 // Right-click (Mac) or long-press (iPhone/iPad).
                 .contextMenu {
                     Button {
@@ -71,8 +76,6 @@ struct FileListView: View {
                 }
             }
         }
-        // Circles appear in front of each file only while selecting.
-        .environment(\.editMode, .constant(isSelecting ? .active : .inactive))
         .overlay {
             if files.isEmpty {
                 ContentUnavailableView(
@@ -238,6 +241,26 @@ struct FileListView: View {
             modelContext.delete(file)
         }
         endSelecting()
+    }
+
+    private func fileRow(_ file: SubjectFile) -> some View {
+        HStack(spacing: 12) {
+            thumbnail(for: file)
+            Text(file.name)
+            if file.isReadOnly {
+                Image(systemName: "lock.fill")
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+            }
+        }
+    }
+
+    private func toggleSelection(_ id: PersistentIdentifier) {
+        if selection.contains(id) {
+            selection.remove(id)
+        } else {
+            selection.insert(id)
+        }
     }
 
     private func endSelecting() {

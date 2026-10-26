@@ -40,6 +40,9 @@ struct FileDetailView: View {
                 notesSection(title: "Illustration Project Notes", text: $file.illustrationNotes)
             }
             .padding()
+            // On a wide Mac window: one centered column, so notes don't stretch.
+            .frame(maxWidth: 820)
+            .frame(maxWidth: .infinity)
         }
         .navigationTitle(file.name)
         .navigationBarTitleDisplayMode(.inline)

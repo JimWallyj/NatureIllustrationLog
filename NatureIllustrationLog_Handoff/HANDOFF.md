@@ -40,7 +40,9 @@ Everything from the first conversation, plus Phase 1 of the Mac-transfer work:
 ## Phase 2 progress (2026-10-22)
 - Built and tested on the Mac (Mac Catalyst, macOS 27): window size/minimum, File menu (⌘N New File, ⌘I Import Files…), Photos permission, Photo Location with its own solid top bar and full-window map on the Mac, album Select + trash and right-click menus, File List right-click menus and Delete key, export fix for Mac AirDrop/Mail.
 - Step 2b (installed 2026-10-22, testing): Add Photos / album + offer Photos Library or Files; `ImageFileLoader.swift` reads EXIF dates and converts RAW to JPEG.
-- Remaining Step 2c: zoom in Full Photo View, File Screen max width on wide windows, Command/Shift-click multi-select.
+- Step 2b tested; dates now use `DateChoiceSheet` (Done accepts today; Save waits for a date in Add File).
+- Step 2c (installed 2026-10-25, testing): zoom in Full Photo View (`ZoomableImageView`, UIScrollView-based); File Screen max width 820 on wide windows; Select mode toggles each row independently (custom `SelectionCircle`, no List selection/editMode) in File List and albums — replaces Command/Shift-click.
+- After Phase 2: Phase 3 (offload), then the User Manual (notes in the Project's User_Manual_Notes.md).
 
 ## Next work
 - **Phase 2: Mac version.** Decisions to walk through one at a time: (1) how to add the Mac (Mac Catalyst vs native macOS vs "Designed for iPad"), (2) macOS floor (user tests on macOS 27; Claude suggested 27 to match the iOS rule), (3) Mac photo sources (Photos library, Finder files, drag and drop), (4) Mac layout details.

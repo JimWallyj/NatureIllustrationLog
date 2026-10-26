@@ -199,3 +199,15 @@ extension View {
         }
     }
 }
+
+/// The circle shown in front of each row in Select mode: filled with a
+/// checkmark when the row is checked, empty when not.
+struct SelectionCircle: View {
+    let isSelected: Bool
+
+    var body: some View {
+        Image(systemName: isSelected ? "checkmark.circle.fill" : "circle")
+            .font(.title3)
+            .foregroundStyle(isSelected ? Color.accentColor : Color.secondary)
+    }
+}

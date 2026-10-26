@@ -32,17 +32,24 @@ struct AlbumView: View {
 
     var body: some View {
         NavigationStack {
-            List(selection: $selection) {
+            List {
                 ForEach(Array(photos.enumerated()), id: \.element.id) { index, photo in
                     HStack(spacing: 12) {
+                        if isSelecting {
+                            SelectionCircle(isSelected: selection.contains(photo.persistentModelID))
+                        }
                         thumbnail(for: photo)
                             .onTapGesture { viewing = ViewerItem(id: index) }
-                            .allowsHitTesting(!isSelecting)   // in Select mode a tap checks the row
+                            .allowsHitTesting(!isSelecting)   // in Select mode a click checks the row
                         PhotoDateRow(photo: photo, isEditable: !file.isLocked)
                             .frame(maxWidth: .infinity, alignment: .leading)
                             .disabled(isSelecting)
                     }
-                    .tag(photo.persistentModelID)
+                    .contentShape(Rectangle())
+                    .onTapGesture {
+                        // Select mode: each click checks or unchecks this photo only.
+                        if isSelecting { toggleSelection(photo.persistentModelID) }
+                    }
                     .swipeActions(edge: .trailing) {
                         if !file.isLocked {
                             Button(role: .destructive) {
@@ -80,8 +87,6 @@ struct AlbumView: View {
                     }
                 }
             }
-            // Circles appear in front of each photo only while selecting.
-            .environment(\.editMode, .constant(isSelecting ? .active : .inactive))
             .overlay {
                 if photos.isEmpty {
                     ContentUnavailableView(
@@ -259,6 +264,14 @@ struct AlbumView: View {
     }
 
     // MARK: - Actions
+
+    private func toggleSelection(_ id: PersistentIdentifier) {
+        if selection.contains(id) {
+            selection.remove(id)
+        } else {
+            selection.insert(id)
+        }
+    }
 
     private func endSelecting() {
         isSelecting = false
