@@ -17,11 +17,6 @@ struct EditHomeView: View {
         NavigationStack {
             VStack(spacing: 24) {
                 Spacer()
-                Button("Change Background") {
-                    isPickingPhoto = true
-                }
-                .buttonStyle(RaisedButtonStyle())
-
                 Button("Import Files") {
                     isPickingImportFiles = true
                 }
@@ -34,6 +29,11 @@ struct EditHomeView: View {
                 }
                 .buttonStyle(RaisedButtonStyle())
                 .disabled(replacedFiles.isEmpty)
+
+                Button("Change Background") {
+                    isPickingPhoto = true
+                }
+                .buttonStyle(RaisedButtonStyle())
                 Spacer()
             }
             .frame(maxWidth: .infinity)

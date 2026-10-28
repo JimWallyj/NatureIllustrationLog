@@ -300,6 +300,8 @@
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = NatureIllustrationLog/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = "Nature Illustration Log";
+				"INFOPLIST_KEY_CFBundleDisplayName[sdk=iphoneos*]" = NatureIllustrationLog;
+				"INFOPLIST_KEY_CFBundleDisplayName[sdk=iphonesimulator*]" = NatureIllustrationLog;
 				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "Used to show where you are on the map when you record a photo's location.";
 				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "Used to read the date and location of photos you add to your nature log.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
@@ -354,6 +356,8 @@
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = NatureIllustrationLog/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = "Nature Illustration Log";
+				"INFOPLIST_KEY_CFBundleDisplayName[sdk=iphoneos*]" = NatureIllustrationLog;
+				"INFOPLIST_KEY_CFBundleDisplayName[sdk=iphonesimulator*]" = NatureIllustrationLog;
 				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "Used to show where you are on the map when you record a photo's location.";
 				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "Used to read the date and location of photos you add to your nature log.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;

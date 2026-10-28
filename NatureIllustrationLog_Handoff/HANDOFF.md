@@ -57,7 +57,8 @@ Everything from the first conversation, plus Phase 1 of the Mac-transfer work:
 - Accessibility (VoiceOver labels, Dynamic Type) deferred, not rejected.
 - Unit tests in spec Section 8 not written yet.
 - Smaller stored copies of full photos: revisit with offloading.
-- Display Name is "Nature Illustration Log" (set 2026-10-27). The user likes the iPhone icon label without spaces ("NatureIllustration…"); to make that permanent, set an iPhone-only `INFOPLIST_KEY_CFBundleDisplayName[sdk=iphoneos*]` (with Xcode quit) — not done yet.
+- Display Name: "Nature Illustration Log" (Mac window title); iPhone/iPad icon label "NatureIllustrationLog" via `INFOPLIST_KEY_CFBundleDisplayName[sdk=iphoneos*]` / `[sdk=iphonesimulator*]` (works: Mac keeps the spaced name). The iPhone/iPad Home screen shows "Nature Illustration Log" centered in the icon bar (`homeTitle` in HomeView, not on Mac).
+- The same `[sdk=iphoneos*]` trick did NOT work for `LSSupportsOpeningDocumentsInPlace = NO` (Mac build still failed, even with Xcode quit) — the key stays left out; the build warning is accepted.
 - App icon is still the blank placeholder; design one before sharing the app.
 - (Superseded) On hold: a display name "Nature Illustration Log" instead of "NatureIllustrationLog" in the Mac title bar/menu and under the icon (may be shortened on the iPhone home screen).
 - System permission prompts (Photos, Location) are drawn by iOS/macOS; their button order can't be changed by the app.
