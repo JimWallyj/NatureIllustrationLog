@@ -244,3 +244,10 @@ struct OnMacBadge: View {
             .foregroundStyle(Color.accentColor)
     }
 }
+
+/// Runs `action` a moment later, after a confirmation dialog has fully closed.
+/// On the Mac, changing the screen while the dialog is still closing can leave
+/// the window ignoring the '<' button until Esc is pressed.
+func afterDialogCloses(_ action: @escaping () -> Void) {
+    DispatchQueue.main.asyncAfter(deadline: .now() + 0.35, execute: action)
+}

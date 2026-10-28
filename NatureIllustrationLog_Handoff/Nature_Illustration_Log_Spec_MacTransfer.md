@@ -35,6 +35,7 @@
 - **UI elements:**
   - a. Screen Background = Gradient graphic at the start, which can be updated by the user with a nature photo from their Photos app files.
   - b. Plus sign (+) in the top left corner to open Add File screen
+  - b2. (iPhone/iPad) The app's name, "Nature Illustration Log", centered in the icon bar between the plus and gear signs, in English in every language. Not shown on the Mac, where the window title already shows it.
   - c. Gear sign in the top right corner to open the Settings Screen (formerly "Edit Home")
   - d. Big button in the center to open File Screen. Button is named, "Illustration Projects". It uses the app's raised button style (see Section 9) in Apple's standard blue. The Home background itself stays as before (default gradient, or the user's chosen photo).
 - **States:** empty / loading / error / populated
@@ -179,7 +180,7 @@
   - c. Update — shown only when the incoming file has the same hidden ID and came from the user's own device. If the copy on the device was changed more recently, a warning appears: "The copy on this device was changed more recently. Update anyway?" The replaced version goes to Recently Replaced.
   - d. Skip This File — the rest of the transfer continues
   - e. Cancel Transfer — nothing more comes in; files that arrived before the conflict stay
-  - f. "Do this for all remaining conflicts" checkbox, for Use suggested name and Skip (not for Enter a new name)
+  - f. "Do this for all remaining conflicts" checkbox, for Use suggested name, Update, and Skip (not for Enter a new name). A standing Update is used only where Update is offered and never when the copy on the device was changed more recently — those files still ask.
 - **Never offered:** replacing a different file that merely shares the name, whether the existing file is editable or read-only.
 - **Hidden ID rule:** an imported file keeps the sender's hidden ID, unless a file with that ID is already on the device (then the import is a second copy and gets a new ID).
 

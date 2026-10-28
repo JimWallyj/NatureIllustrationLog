@@ -179,7 +179,7 @@ struct FileListView: View {
         ) {
             Button("Delete", role: .destructive) {
                 if let file = pendingDeleteFile {
-                    modelContext.delete(file)
+                    afterDialogCloses { modelContext.delete(file) }
                 }
                 pendingDeleteFile = nil
             }
@@ -198,7 +198,9 @@ struct FileListView: View {
             isPresented: $showingMultiDelete,
             titleVisibility: .visible
         ) {
-            Button("Delete", role: .destructive) { deleteSelected() }
+            Button("Delete", role: .destructive) {
+                afterDialogCloses { deleteSelected() }
+            }
             Button("Cancel", role: .cancel) {}
         } message: {
             if selectedFiles.contains(where: \.isPlaceholder) {

@@ -72,7 +72,7 @@ struct NameConflictCard: View {
         }
         .alert("Update Anyway?", isPresented: $showingNewerWarning) {
             Button("Update Anyway") {
-                importer.resolveConflict(.update, applyToAll: false)
+                importer.resolveConflict(.update, applyToAll: applyToAll)
             }
             Button("Cancel", role: .cancel) {}
         } message: {
@@ -104,7 +104,7 @@ struct NameConflictCard: View {
                         if conflict.deviceCopyIsNewer {
                             showingNewerWarning = true
                         } else {
-                            importer.resolveConflict(.update, applyToAll: false)
+                            importer.resolveConflict(.update, applyToAll: applyToAll)
                         }
                     } label: {
                         Text("Update This File")
@@ -138,7 +138,7 @@ struct NameConflictCard: View {
             if conflict.canApplyToAll {
                 VStack(alignment: .leading, spacing: 4) {
                     Toggle("Do this for all remaining conflicts", isOn: $applyToAll)
-                    Text("Applies to the suggested name and Skip.")
+                    Text("Applies to the suggested name, Update, and Skip. Update still asks first if a copy here was changed more recently.")
                         .font(.footnote)
                         .foregroundStyle(.secondary)
                 }

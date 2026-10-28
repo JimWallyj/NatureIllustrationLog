@@ -128,21 +128,23 @@ final class ImportManager {
                         && $0.uniqueID == package.manifest.uniqueID
                         && !$0.isReadOnly
                 } ?? false
+                let deviceCopyIsNewer = (existing?.lastChanged ?? .distantPast) > package.manifest.lastChanged
                 let choice: ConflictChoice
-                if let standingChoice {
-                    choice = standingChoice
+                if let standing = standingChoice,
+                   standingChoiceApplies(standing, canUpdate: canUpdate, deviceCopyIsNewer: deviceCopyIsNewer) {
+                    choice = standing
                 } else {
                     let (picked, applyToAll) = await askAboutConflict(Conflict(
                         incomingName: name,
                         suggestedName: suggested,
                         canApplyToAll: index < urls.count - 1,
                         canUpdate: canUpdate,
-                        deviceCopyIsNewer: (existing?.lastChanged ?? .distantPast) > package.manifest.lastChanged
+                        deviceCopyIsNewer: deviceCopyIsNewer
                     ))
                     choice = picked
                     if applyToAll {
                         switch picked {
-                        case .useSuggested, .skip: standingChoice = picked
+                        case .useSuggested, .skip, .update: standingChoice = picked
                         default: break
                         }
                     }
@@ -190,6 +192,19 @@ final class ImportManager {
             await Task.yield()
         }
         summary = result
+    }
+
+    /// Whether a "Do this for all remaining conflicts" choice can be used for
+    /// this file without asking. Update is used only where it's offered (the
+    /// same file from the user's own device) and never when the copy here was
+    /// changed more recently — those still ask.
+    private func standingChoiceApplies(_ standing: ConflictChoice, canUpdate: Bool, deviceCopyIsNewer: Bool) -> Bool {
+        switch standing {
+        case .update:
+            return canUpdate && !deviceCopyIsNewer
+        default:
+            return true
+        }
     }
 
     private func askAboutConflict(_ newConflict: Conflict) async -> (ConflictChoice, Bool) {

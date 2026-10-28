@@ -752,16 +752,6 @@
         }
       }
     },
-    "Applies to the suggested name and Skip.": {
-      "localizations": {
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Se aplica al nombre sugerido y a Omitir."
-          }
-        }
-      }
-    },
     "Skip This File": {
       "localizations": {
         "es": {
@@ -1338,6 +1328,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "Archivos completos recuperados de la Mac: %lld"
+          }
+        }
+      }
+    },
+    "Applies to the suggested name, Update, and Skip. Update still asks first if a copy here was changed more recently.": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Se aplica al nombre sugerido, a Actualizar y a Omitir. Actualizar sigue preguntando primero si una copia de aquí se modificó más recientemente."
           }
         }
       }

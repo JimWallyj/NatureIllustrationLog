@@ -49,7 +49,7 @@ Everything from the first conversation, plus Phase 1 of the Mac-transfer work:
 ## Next work
 - **Phase 2: Mac version.** Decisions to walk through one at a time: (1) how to add the Mac (Mac Catalyst vs native macOS vs "Designed for iPad"), (2) macOS floor (user tests on macOS 27; Claude suggested 27 to match the iOS rule), (3) Mac photo sources (Photos library, Finder files, drag and drop), (4) Mac layout details.
 - **Phase 3: Offload** ("Send to Mac and Free Up Space", placeholders, "On Mac" badge, image becomes optional on AlbumPhoto).
-- Open question: add Update to "Do this for all remaining conflicts" for big Mac round trips.
+- Decided 2026-10-26: "Do this for all remaining conflicts" also covers Update (only where offered; still asks when the device copy is newer).
 
 ## Open items (carried over)
 - Fluent Spanish review of both String Catalogs before sharing the app. More languages later (French, German, Japanese mentioned).
@@ -57,7 +57,9 @@ Everything from the first conversation, plus Phase 1 of the Mac-transfer work:
 - Accessibility (VoiceOver labels, Dynamic Type) deferred, not rejected.
 - Unit tests in spec Section 8 not written yet.
 - Smaller stored copies of full photos: revisit with offloading.
-- On hold (user's choice): a display name "Nature Illustration Log" instead of "NatureIllustrationLog" in the Mac title bar/menu and under the icon (may be shortened on the iPhone home screen).
+- Display Name is "Nature Illustration Log" (set 2026-10-27). The user likes the iPhone icon label without spaces ("NatureIllustration…"); to make that permanent, set an iPhone-only `INFOPLIST_KEY_CFBundleDisplayName[sdk=iphoneos*]` (with Xcode quit) — not done yet.
+- App icon is still the blank placeholder; design one before sharing the app.
+- (Superseded) On hold: a display name "Nature Illustration Log" instead of "NatureIllustrationLog" in the Mac title bar/menu and under the icon (may be shortened on the iPhone home screen).
 - System permission prompts (Photos, Location) are drawn by iOS/macOS; their button order can't be changed by the app.
 
 ## Gotchas that cost time

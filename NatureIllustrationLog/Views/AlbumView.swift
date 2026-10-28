@@ -9,6 +9,10 @@ import SwiftUI
 struct AlbumView: View {
     let file: SubjectFile
     let kind: AlbumKind
+    /// Closes the album directly (set by the File Screen). On the Mac, the
+    /// usual "dismiss" could target a just-closed delete confirmation instead,
+    /// leaving '<' unresponsive.
+    var onClose: (() -> Void)? = nil
 
     @Environment(\.modelContext) private var modelContext
     @Environment(\.dismiss) private var dismiss
@@ -145,8 +149,12 @@ struct AlbumView: View {
             ) {
                 Button("Delete", role: .destructive) {
                     if let photo = pendingDelete {
-                        modelContext.delete(photo)
-                        file.touch()
+                        // Delete just after the confirmation has fully closed;
+                        // on the Mac, deleting while it closes left '<' unresponsive.
+                        afterDialogCloses {
+                            modelContext.delete(photo)
+                            file.touch()
+                        }
                     }
                     pendingDelete = nil
                 }
@@ -161,7 +169,9 @@ struct AlbumView: View {
                 isPresented: $showingDeleteSelected,
                 titleVisibility: .visible
             ) {
-                Button("Delete", role: .destructive) { deleteSelected() }
+                Button("Delete", role: .destructive) {
+                    afterDialogCloses { deleteSelected() }
+                }
                 Button("Cancel", role: .cancel) {}
             } message: {
                 Text("This can't be undone.")
@@ -218,7 +228,11 @@ struct AlbumView: View {
 
     private var backButton: some View {
         Button {
-            dismiss()
+            if let onClose {
+                onClose()
+            } else {
+                dismiss()
+            }
         } label: {
             Image(systemName: "chevron.left")
         }

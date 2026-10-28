@@ -23,6 +23,7 @@ struct HomeView: View {
                         Spacer()
                         iconButton("gearshape") { showingEditHome = true }
                     }
+                    .overlay { homeTitle }
                     .padding()
                     .frame(maxWidth: .infinity)
                     .background(Color(.systemBackground))
@@ -122,6 +123,22 @@ struct HomeView: View {
 //        }
 //        .foregroundStyle(.primary)
 //    }
+
+    /// The app's name, centered in the icon bar on iPhone/iPad. Not shown on the
+    /// Mac, where the window's title bar already shows it. Kept in English in
+    /// every language, since it's the app's name.
+    @ViewBuilder
+    private var homeTitle: some View {
+        #if targetEnvironment(macCatalyst)
+        EmptyView()
+        #else
+        Text(verbatim: "Nature Illustration Log")
+            .font(.headline)
+            .lineLimit(1)
+            .minimumScaleFactor(0.8)
+            .padding(.horizontal, 56)   // stays clear of the + and gear
+        #endif
+    }
 
     @ViewBuilder
     private var backgroundView: some View {

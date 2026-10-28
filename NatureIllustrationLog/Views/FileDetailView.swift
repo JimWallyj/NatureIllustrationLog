@@ -10,6 +10,9 @@ struct FileDetailView: View {
     @State private var photoSpaceNeeded: Int64?
     @State private var isPickingFiles = false
     @State private var filesKind: AlbumKind = .subject
+    /// Bumped when the album closes so the Mac redraws the top-bar buttons
+    /// (after photos are added it otherwise leaves '<' and Home blank until scrolling).
+    @State private var toolbarRefresh = 0
     @State private var isEditingLocation = false
     @State private var showingFullMap = false
     @State private var pickerTarget: AlbumKind?
@@ -58,6 +61,7 @@ struct FileDetailView: View {
                 } label: {
                     Image(systemName: "chevron.left")
                 }
+                .id(toolbarRefresh)
             }
             ToolbarItem(placement: .topBarTrailing) {
                 // Not shown when viewing an older version from Recently Replaced (opened from Settings).
@@ -67,6 +71,7 @@ struct FileDetailView: View {
                     } label: {
                         Image(systemName: "house")
                     }
+                    .id(toolbarRefresh)
                 }
             }
         }
@@ -118,8 +123,8 @@ struct FileDetailView: View {
             }
         )
         .notEnoughSpaceForPhotosAlert(bytesNeeded: $photoSpaceNeeded)
-        .fullScreenCover(item: $presentedAlbum) { kind in
-            AlbumView(file: file, kind: kind)
+        .fullScreenCover(item: $presentedAlbum, onDismiss: { toolbarRefresh += 1 }) { kind in
+            AlbumView(file: file, kind: kind, onClose: { presentedAlbum = nil })
         }
         .overlay {
             if isImporting {
