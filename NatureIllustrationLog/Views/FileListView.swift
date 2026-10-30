@@ -285,6 +285,9 @@ struct FileListView: View {
         HStack(spacing: 12) {
             thumbnail(for: file)
             Text(file.name)
+                // Start the divider line under the file name, even when
+                // an On Mac badge or lock follows it.
+                .alignmentGuide(.listRowSeparatorLeading) { $0[.leading] }
             if file.isPlaceholder {
                 OnMacBadge()
             }

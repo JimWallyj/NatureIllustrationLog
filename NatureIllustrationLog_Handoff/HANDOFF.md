@@ -44,6 +44,8 @@ Everything from the first conversation, plus Phase 1 of the Mac-transfer work:
 - **Phase 2 complete (tested 2026-10-25 on Mac and iPhone).**
 - Step 2c: zoom in Full Photo View (`ZoomableImageView`, UIScrollView-based); File Screen max width 820 on wide windows; Select mode toggles each row independently (custom `SelectionCircle`, no List selection/editMode) in File List and albums — replaces Command/Shift-click.
 - **Phase 3 (offload) complete — tested 2026-10-26 on iPhone and Mac:** `AlbumPhoto.imageData` is now optional; offload = export (ownDevices) + "Has this file arrived on your Mac?" → Yes removes full photos and sets `isPlaceholder`; `OnMacBadge` / `OnMacNote`; Update from the Mac deletes the placeholder and inserts the full file (`restoredFromMac` in the summary). Offload is hidden on Mac Catalyst (`FileListView.canOffload`).
+- Settings button order (2026-10-27): Import Files, Recently Replaced, Change Background.
+- User Manual: first draft written 2026-10-27 as a Docs artifact (https://claude.ai/artifact/44b1E6y6DQPNn5kjGzaDgz), English only, text with screenshot placeholders; the user will review and supply screenshots. Uses "lightweight copy" for placeholders (asked the user to confirm in a doc comment).
 - Then the User Manual (notes in the Project's User_Manual_Notes.md).
 
 ## Next work
