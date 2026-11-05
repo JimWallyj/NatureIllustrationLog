@@ -1341,6 +1341,26 @@
           }
         }
       }
+    },
+    "Save to a Folder…": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Guardar en una carpeta…"
+          }
+        }
+      }
+    },
+    "Send to My Devices keeps the files editable. Share Read-Only lets others view them but not change them. Save to a Folder saves editable copies in a folder you choose, such as iCloud Drive.": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Enviar a mis dispositivos mantiene los archivos editables. Compartir solo lectura permite que otras personas los vean, pero no los cambien. Guardar en una carpeta guarda copias editables en la carpeta que elijas, como iCloud Drive."
+          }
+        }
+      }
     }
   },
   "version": "1.0"

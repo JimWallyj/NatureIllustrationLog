@@ -66,6 +66,13 @@ struct FileListView: View {
                         } label: {
                             Label("Share Read-Only", systemImage: "lock")
                         }
+                        if Self.canSaveToFolder {
+                            Button {
+                                export(.ownDevices, only: [file], toFolder: true)
+                            } label: {
+                                Label("Save to a Folder…", systemImage: "folder")
+                            }
+                        }
                         if Self.canOffload {
                             Button {
                                 export(.ownDevices, only: [file], offload: true)
@@ -212,6 +219,9 @@ struct FileListView: View {
         .confirmationDialog("Send Files", isPresented: $showingExportOptions, titleVisibility: .visible) {
             Button("Send to My Devices") { export(.ownDevices) }
             Button("Share Read-Only") { export(.readOnly) }
+            if Self.canSaveToFolder {
+                Button("Save to a Folder…") { export(.ownDevices, toFolder: true) }
+            }
             if Self.canOffload {
                 Button("Send to Mac and Free Up Space") { export(.ownDevices, offload: true) }
             }
@@ -220,6 +230,8 @@ struct FileListView: View {
             let skipped = selectedFiles.count - sendableFiles.count
             if skipped > 0 {
                 Text("\(skipped) of the \(selectedFiles.count) selected files can't be sent (read-only or already on your Mac). Send the other \(sendableFiles.count)?")
+            } else if Self.canSaveToFolder {
+                Text("Send to My Devices keeps the files editable. Share Read-Only lets others view them but not change them. Save to a Folder saves editable copies in a folder you choose, such as iCloud Drive.")
             } else if Self.canOffload {
                 Text("Send to My Devices keeps the files editable. Share Read-Only lets others view them but not change them. Send to Mac and Free Up Space sends them to your Mac, then keeps only a lightweight copy here.")
             } else {
@@ -322,8 +334,9 @@ struct FileListView: View {
         }
     }
 
-    /// Writes one transfer file per selected file, then opens the share sheet.
-    private func export(_ kind: FilePackage.TransferKind, only files: [SubjectFile]? = nil, offload: Bool = false) {
+    /// Writes one transfer file per selected file, then opens the share sheet
+    /// (or, for "Save to a Folder…" on the Mac, the folder panel).
+    private func export(_ kind: FilePackage.TransferKind, only files: [SubjectFile]? = nil, offload: Bool = false, toFolder: Bool = false) {
         let toSend = files ?? sendableFiles
         offloadCandidates = offload ? toSend.map(\.persistentModelID) : []
         offloadSendCompleted = false
@@ -341,8 +354,14 @@ struct FileListView: View {
                     await Task.yield()   // keep the progress indicator moving
                 }
                 isPreparing = false
-                lastExportFolder = exportFolder
-                shareBatch = ExportBatch(folder: exportFolder, urls: urls)
+                if toFolder {
+                    FolderExporter.present(urls: urls) { saved in
+                        if saved { endSelecting() }
+                    }
+                } else {
+                    lastExportFolder = exportFolder
+                    shareBatch = ExportBatch(folder: exportFolder, urls: urls)
+                }
             } catch {
                 if let folder { try? FileManager.default.removeItem(at: folder) }
                 isPreparing = false
@@ -371,6 +390,16 @@ struct FileListView: View {
                 showingArrivalQuestion = true
             }
         }
+    }
+
+    /// "Save to a Folder…" is Mac only: the Mac share menu has no "Save to
+    /// Files", while iPhone/iPad already offer it in the share sheet.
+    static var canSaveToFolder: Bool {
+        #if targetEnvironment(macCatalyst)
+        true
+        #else
+        false
+        #endif
     }
 
     /// Offloading is for freeing space on iPhone/iPad; the Mac keeps full files.
