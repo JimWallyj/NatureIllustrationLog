@@ -79,6 +79,17 @@ final class SubjectFile {
         isPlaceholder = true
     }
 
+    /// "Set as First": moves a photo to the front of its album, so the File
+    /// Screen (and, for subject photos, the File List) shows it.
+    func setAsFirst(_ photo: AlbumPhoto) {
+        let lowest = album(photo.kind).map(\.sortIndex).min() ?? 0
+        photo.sortIndex = lowest - 1
+        touch()
+    }
+
+    /// The File List's order: alphabetical by name.
+    static let listOrder = [SortDescriptor(\SubjectFile.name)]
+
     /// Records that the user changed something in this file.
     func touch() {
         lastChanged = .now

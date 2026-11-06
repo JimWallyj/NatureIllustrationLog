@@ -316,8 +316,6 @@ struct AlbumView: View {
 
     /// Moves a photo to the front of the album.
     private func makeFirst(_ photo: AlbumPhoto) {
-        let lowest = photos.map(\.sortIndex).min() ?? 0
-        photo.sortIndex = lowest - 1
-        file.touch()
+        file.setAsFirst(photo)
     }
 }

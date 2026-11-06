@@ -5,7 +5,7 @@ struct FileListView: View {
     @Environment(\.modelContext) private var modelContext
     @Environment(NavigationCoordinator.self) private var coordinator
     // Older versions waiting in Recently Replaced are not shown here.
-    @Query(filter: #Predicate<SubjectFile> { $0.replacedDate == nil }, sort: \SubjectFile.name)
+    @Query(filter: #Predicate<SubjectFile> { $0.replacedDate == nil }, sort: SubjectFile.listOrder)
     private var files: [SubjectFile]
     @State private var showingAddFile = false
     @State private var pendingDeleteFile: SubjectFile?
