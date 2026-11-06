@@ -69,6 +69,16 @@ final class SubjectFile {
     /// offloaded to the Mac (placeholder), or an older version kept in Recently Replaced.
     var isLocked: Bool { isReadOnly || isPlaceholder || replacedDate != nil }
 
+    /// "Send to Mac and Free Up Space", once the user confirms the file arrived:
+    /// removes the full-size photos and makes this a read-only lightweight copy.
+    /// Thumbnails, notes, dates, and location stay.
+    func freeUpFullPhotos() {
+        for photo in photos {
+            photo.imageData = nil
+        }
+        isPlaceholder = true
+    }
+
     /// Records that the user changed something in this file.
     func touch() {
         lastChanged = .now

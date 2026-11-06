@@ -156,20 +156,10 @@ final class ImportManager {
                 case .useName(let typed):
                     name = typed.trimmingCharacters(in: .whitespacesAndNewlines)
                 case .update:
-                    // The current version moves to Recently Replaced (kept 30 days);
-                    // the incoming copy takes its place with the same hidden ID.
                     if let existing, canUpdate {
-                        if existing.isPlaceholder {
-                            // The full file is back from the Mac: the placeholder
-                            // is simply removed (nothing to keep in Recently Replaced).
-                            context.delete(existing)
-                            try? context.save()   // so its hidden ID is free for the full file
-                            insert(package, named: name, into: context)
-                            result.restoredFromMac += 1
-                        } else {
-                            existing.replacedDate = .now
-                            insert(package, named: name, into: context)
-                            result.updated += 1
+                        switch Self.applyUpdate(package, replacing: existing, named: name, in: context) {
+                        case .updated: result.updated += 1
+                        case .restoredFromMac: result.restoredFromMac += 1
                         }
                         await Task.yield()
                         continue
@@ -187,7 +177,7 @@ final class ImportManager {
                 }
             }
 
-            insert(package, named: name, into: context)
+            Self.insert(package, named: name, into: context)
             result.imported += 1
             await Task.yield()
         }
@@ -214,13 +204,39 @@ final class ImportManager {
         }
     }
 
+    // MARK: - Steps shared with the unit tests
+
+    enum UpdateOutcome {
+        case updated           // the older version went to Recently Replaced
+        case restoredFromMac   // a lightweight copy was replaced by its full file
+    }
+
+    /// Update: the incoming copy takes the place of `existing`, keeping the same
+    /// hidden ID. A normal file moves to Recently Replaced (kept 30 days); a
+    /// lightweight copy (offloaded to the Mac) is simply removed, since the full
+    /// file is back.
+    @discardableResult
+    static func applyUpdate(_ package: FilePackage.LoadedPackage, replacing existing: SubjectFile, named name: String, in context: ModelContext) -> UpdateOutcome {
+        if existing.isPlaceholder {
+            context.delete(existing)
+            try? context.save()   // so its hidden ID is free for the full file
+            insert(package, named: name, into: context)
+            return .restoredFromMac
+        } else {
+            existing.replacedDate = .now
+            insert(package, named: name, into: context)
+            return .updated
+        }
+    }
+
     /// Creates the file and its photos from a transfer file.
-    private func insert(_ package: FilePackage.LoadedPackage, named name: String, into context: ModelContext) {
+    @discardableResult
+    static func insert(_ package: FilePackage.LoadedPackage, named name: String, into context: ModelContext) -> SubjectFile {
         let manifest = package.manifest
 
         // Keep the hidden ID so a later transfer can recognize this same file,
         // unless a file with that ID is already here (then this is a second copy).
-        let idAlreadyUsed = fileExists(withID: manifest.uniqueID)
+        let idAlreadyUsed = fileExists(withID: manifest.uniqueID, in: context)
 
         let file = SubjectFile(
             name: name,
@@ -248,6 +264,7 @@ final class ImportManager {
             photo.file = file
         }
         try? context.save()
+        return file
     }
 
     // MARK: - Helpers
@@ -297,16 +314,24 @@ final class ImportManager {
         }
     }
 
-    private func fileExists(withID id: UUID) -> Bool {
-        guard let context else { return false }
+    private static func fileExists(withID id: UUID, in context: ModelContext) -> Bool {
         let descriptor = FetchDescriptor<SubjectFile>(predicate: #Predicate { $0.uniqueID == id && $0.replacedDate == nil })
         return ((try? context.fetchCount(descriptor)) ?? 0) > 0
     }
 
     /// "Great Blue Heron (2)", or (3), (4)… — the first one not already taken.
     private func suggestedName(for name: String) -> String {
+        Self.suggestedName(for: name, taken: currentNames())
+    }
+
+    /// "Great Blue Heron (2)", or (3), (4)… — the first one not in `taken`
+    /// (ignoring upper/lower case).
+    static func suggestedName(for name: String, taken: [String]) -> String {
+        func isTaken(_ candidate: String) -> Bool {
+            taken.contains { $0.trimmingCharacters(in: .whitespacesAndNewlines).caseInsensitiveCompare(candidate) == .orderedSame }
+        }
         var number = 2
-        while !isNameAvailable("\(name) (\(number))") {
+        while isTaken("\(name) (\(number))") {
             number += 1
         }
         return "\(name) (\(number))"

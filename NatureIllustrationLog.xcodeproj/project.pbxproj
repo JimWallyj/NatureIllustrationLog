@@ -11,10 +11,21 @@
 		2E297233307DD444008A1B98 /* Localizable.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = 2E297232307DD444008A1B98 /* Localizable.xcstrings */; };
 /* End PBXBuildFile section */
 
+/* Begin PBXContainerItemProxy section */
+		2EF73BC1309D7E7700A48C7B /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 2E74302830683EE500D4B32F /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 2E74302F30683EE500D4B32F;
+			remoteInfo = NatureIllustrationLog;
+		};
+/* End PBXContainerItemProxy section */
+
 /* Begin PBXFileReference section */
 		2E297210307C864B008A1B98 /* InfoPlist.xcstrings */ = {isa = PBXFileReference; lastKnownFileType = text.json.xcstrings; path = InfoPlist.xcstrings; sourceTree = "<group>"; };
 		2E297232307DD444008A1B98 /* Localizable.xcstrings */ = {isa = PBXFileReference; lastKnownFileType = text.json.xcstrings; path = Localizable.xcstrings; sourceTree = "<group>"; };
 		2E74303030683EE500D4B32F /* NatureIllustrationLog.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = NatureIllustrationLog.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		2EF73BBD309D7E7700A48C7B /* NatureIllustrationLogTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = NatureIllustrationLogTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
@@ -36,10 +47,22 @@
 			path = NatureIllustrationLog;
 			sourceTree = "<group>";
 		};
+		2EF73BBE309D7E7700A48C7B /* NatureIllustrationLogTests */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = NatureIllustrationLogTests;
+			sourceTree = "<group>";
+		};
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
 		2E74302D30683EE500D4B32F /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		2EF73BBA309D7E7700A48C7B /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -55,6 +78,7 @@
 				2E74303230683EE500D4B32F /* NatureIllustrationLog */,
 				2E297210307C864B008A1B98 /* InfoPlist.xcstrings */,
 				2E297232307DD444008A1B98 /* Localizable.xcstrings */,
+				2EF73BBE309D7E7700A48C7B /* NatureIllustrationLogTests */,
 				2E74303130683EE500D4B32F /* Products */,
 			);
 			sourceTree = "<group>";
@@ -63,6 +87,7 @@
 			isa = PBXGroup;
 			children = (
 				2E74303030683EE500D4B32F /* NatureIllustrationLog.app */,
+				2EF73BBD309D7E7700A48C7B /* NatureIllustrationLogTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -92,6 +117,29 @@
 			productReference = 2E74303030683EE500D4B32F /* NatureIllustrationLog.app */;
 			productType = "com.apple.product-type.application";
 		};
+		2EF73BBC309D7E7700A48C7B /* NatureIllustrationLogTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 2EF73BC5309D7E7700A48C7B /* Build configuration list for PBXNativeTarget "NatureIllustrationLogTests" */;
+			buildPhases = (
+				2EF73BB9309D7E7700A48C7B /* Sources */,
+				2EF73BBA309D7E7700A48C7B /* Frameworks */,
+				2EF73BBB309D7E7700A48C7B /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				2EF73BC2309D7E7700A48C7B /* PBXTargetDependency */,
+			);
+			fileSystemSynchronizedGroups = (
+				2EF73BBE309D7E7700A48C7B /* NatureIllustrationLogTests */,
+			);
+			name = NatureIllustrationLogTests;
+			packageProductDependencies = (
+			);
+			productName = NatureIllustrationLogTests;
+			productReference = 2EF73BBD309D7E7700A48C7B /* NatureIllustrationLogTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -99,11 +147,15 @@
 			isa = PBXProject;
 			attributes = {
 				BuildIndependentTargetsInParallel = 1;
-				LastSwiftUpdateCheck = 2630;
+				LastSwiftUpdateCheck = 2720;
 				LastUpgradeCheck = 2700;
 				TargetAttributes = {
 					2E74302F30683EE500D4B32F = {
 						CreatedOnToolsVersion = 26.3;
+					};
+					2EF73BBC309D7E7700A48C7B = {
+						CreatedOnToolsVersion = 27.2;
+						TestTargetID = 2E74302F30683EE500D4B32F;
 					};
 				};
 			};
@@ -123,6 +175,7 @@
 			projectRoot = "";
 			targets = (
 				2E74302F30683EE500D4B32F /* NatureIllustrationLog */,
+				2EF73BBC309D7E7700A48C7B /* NatureIllustrationLogTests */,
 			);
 		};
 /* End PBXProject section */
@@ -137,6 +190,13 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		2EF73BBB309D7E7700A48C7B /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
@@ -147,7 +207,22 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		2EF73BB9309D7E7700A48C7B /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		2EF73BC2309D7E7700A48C7B /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 2E74302F30683EE500D4B32F /* NatureIllustrationLog */;
+			targetProxy = 2EF73BC1309D7E7700A48C7B /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
 		2E74303B30683EE700D4B32F /* Debug */ = {
@@ -299,7 +374,7 @@
 				ENABLE_USER_SELECTED_FILES = readwrite;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = NatureIllustrationLog/Info.plist;
-				INFOPLIST_KEY_CFBundleDisplayName = "Nature Illustration Log";
+				INFOPLIST_KEY_CFBundleDisplayName = NatureIllustrationLog;
 				"INFOPLIST_KEY_CFBundleDisplayName[sdk=iphoneos*]" = NatureIllustrationLog;
 				"INFOPLIST_KEY_CFBundleDisplayName[sdk=iphonesimulator*]" = NatureIllustrationLog;
 				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "Used to show where you are on the map when you record a photo's location.";
@@ -355,7 +430,7 @@
 				ENABLE_USER_SELECTED_FILES = readwrite;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = NatureIllustrationLog/Info.plist;
-				INFOPLIST_KEY_CFBundleDisplayName = "Nature Illustration Log";
+				INFOPLIST_KEY_CFBundleDisplayName = NatureIllustrationLog;
 				"INFOPLIST_KEY_CFBundleDisplayName[sdk=iphoneos*]" = NatureIllustrationLog;
 				"INFOPLIST_KEY_CFBundleDisplayName[sdk=iphonesimulator*]" = NatureIllustrationLog;
 				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "Used to show where you are on the map when you record a photo's location.";
@@ -387,6 +462,50 @@
 			};
 			name = Release;
 		};
+		2EF73BC3309D7E7700A48C7B /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = QRX7D8367M;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 27.2;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.walejko.NatureIllustrationLogTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				STRING_CATALOG_GENERATE_SYMBOLS = NO;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/NatureIllustrationLog.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/NatureIllustrationLog";
+			};
+			name = Debug;
+		};
+		2EF73BC4309D7E7700A48C7B /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = QRX7D8367M;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 27.2;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.walejko.NatureIllustrationLogTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				STRING_CATALOG_GENERATE_SYMBOLS = NO;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/NatureIllustrationLog.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/NatureIllustrationLog";
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -404,6 +523,15 @@
 			buildConfigurations = (
 				2E74303E30683EE700D4B32F /* Debug */,
 				2E74303F30683EE700D4B32F /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		2EF73BC5309D7E7700A48C7B /* Build configuration list for PBXNativeTarget "NatureIllustrationLogTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				2EF73BC3309D7E7700A48C7B /* Debug */,
+				2EF73BC4309D7E7700A48C7B /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

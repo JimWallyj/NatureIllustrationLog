@@ -51,7 +51,8 @@ Everything from the first conversation, plus Phase 1 of the Mac-transfer work:
 ## Next work
 - **iPad testing complete (2026-11-04)** on the iPad Air 11-inch (M4) Simulator, iPadOS 27 (no physical iPad on iOS 27): all 9 checklist items passed (layout in both orientations, pop-up menus/share sheets, Add File, File List/Select, File Screen, Photo Location, import + name conflicts + Recently Replaced, offload, Spanish). Simulator tips: add photos with `xcrun simctl addmedia booted <files>`; move .natlog files via the Simulator's "On My iPad" folder (find it with `find ~/Library/Developer/CoreSimulator/Devices/<booted UDID>/data -name '*.natlog'`, then `open -R`); the Simulator has no AirDrop.
 - Found during iPad testing: the Mac share menu has no "Save to Files" (normal macOS); the user sends from the Mac with Copy, then Paste in Finder. Resolved (Step 3j, 2026-11-04, tested on Mac and iPad Simulator): Mac-only "Save to a Folder…" in the Send Files menu and right-click menu (`Services/FolderExporter.swift`, UIDocumentPickerViewController forExporting asCopy; `FileListView.canSaveToFolder`). The Mac panel's button reads "Copy 2 Items" — system-drawn, can't be changed; accepted. Manual's Sending step 3 and Sending table updated with the Mac route.
-- Phases 1–3, the User Manual and iPad testing are done. Remaining: app icon concepts (1024×1024 PNG), unit tests from spec Section 8, smaller stored photo copies, fluent Spanish review before sharing.
+- **App icon done (2026-11-04):** concept "A with leaf" — brown leather log book with a leaf on its cover label and a paintbrush across it, on the app's forest-green background. `AppIcon-1024.png` (1024×1024, no transparency; copy in this folder) is in `Assets.xcassets/AppIcon.appiconset` in the **Any Appearance** slot; Dark and Tinted left empty (iOS generates them). Gotcha: dropping the file on the asset list makes a new "Image" set, and dropping into the wrong square put it in Tinted — the icon then doesn't appear. Working on iPhone, iPad Simulator and Mac.
+- Phases 1–3, the User Manual, iPad testing and the app icon are done. Remaining: unit tests from spec Section 8, smaller stored photo copies, fluent Spanish review before sharing.
 - Decided 2026-10-26: "Do this for all remaining conflicts" also covers Update (only where offered; still asks when the device copy is newer).
 
 ## Open items (carried over)
@@ -62,7 +63,6 @@ Everything from the first conversation, plus Phase 1 of the Mac-transfer work:
 - Smaller stored copies of full photos: revisit with offloading.
 - Display Name: "Nature Illustration Log" (Mac window title); iPhone/iPad icon label "NatureIllustrationLog" via `INFOPLIST_KEY_CFBundleDisplayName[sdk=iphoneos*]` / `[sdk=iphonesimulator*]` (works: Mac keeps the spaced name). The iPhone/iPad Home screen shows "Nature Illustration Log" centered in the icon bar (`homeTitle` in HomeView, not on Mac).
 - The same `[sdk=iphoneos*]` trick did NOT work for `LSSupportsOpeningDocumentsInPlace = NO` (Mac build still failed, even with Xcode quit) — the key stays left out; the build warning is accepted.
-- App icon is still the blank placeholder; design one before sharing the app.
 - (Superseded) On hold: a display name "Nature Illustration Log" instead of "NatureIllustrationLog" in the Mac title bar/menu and under the icon (may be shortened on the iPhone home screen).
 - System permission prompts (Photos, Location) are drawn by iOS/macOS; their button order can't be changed by the app.
 

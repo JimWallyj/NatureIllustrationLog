@@ -415,10 +415,7 @@ struct FileListView: View {
     /// placeholder (name, notes, dates, location, thumbnails) with an "On Mac" badge.
     private func finishOffload() {
         for file in files where offloadCandidates.contains(file.persistentModelID) {
-            for photo in file.photos {
-                photo.imageData = nil
-            }
-            file.isPlaceholder = true
+            file.freeUpFullPhotos()
         }
         offloadCandidates = []
         try? modelContext.save()
