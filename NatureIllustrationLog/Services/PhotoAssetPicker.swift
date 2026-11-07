@@ -2,7 +2,7 @@ import Photos
 import PhotosUI
 import SwiftUI
 
-/// A photo the user picked: the full-size JPEG, a small thumbnail for lists,
+/// A photo the user picked: the stored photo (see PhotoStorage), a small thumbnail for lists,
 /// and its date taken if it could be read from the Photos asset.
 struct PickedPhoto: Identifiable {
     let id = UUID()
@@ -91,7 +91,7 @@ struct PhotoAssetPicker: UIViewControllerRepresentable {
         }
 
         private func makePhoto(from image: UIImage, date: Date?) -> PickedPhoto? {
-            guard let data = image.jpegData(compressionQuality: 0.9) else { return nil }
+            guard let data = PhotoStorage.storedData(from: image) else { return nil }
             return PickedPhoto(
                 data: data,
                 thumbnailData: thumbnailData(for: image) ?? data,

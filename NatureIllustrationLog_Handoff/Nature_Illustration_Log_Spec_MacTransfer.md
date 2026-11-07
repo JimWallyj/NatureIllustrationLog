@@ -338,6 +338,11 @@
 **Feature: Zoom in Full Photo View (built in Step 2c, all devices)**
 - **Expected behavior:** pinch (trackpad or touch screen) or double-click/double-tap to zoom into a photo, then drag to look around; double-click/double-tap again to return to the full photo. Swiping between photos works when not zoomed in.
 
+**Feature: Smaller Stored Photos (added 2026-11-06)**
+- **Expected behavior:** every photo added to an album (Photos Library or Files, on any device) is stored at most 4096 pixels on its longest side, in HEIC format (JPEG if the device can't create HEIC), at about 1.5–2 MB instead of 8–10 MB. Smaller photos are not enlarged. Thumbnails (about 400 px, JPEG) are unchanged. Same rule for both albums and all devices; no setting. The originals stay in the user's Photos library.
+- **Settings → "Optimize Photo Storage"** (Spanish: "Optimizar almacenamiento de fotos"): a one-time, user-started action that shrinks photos already in the app the same way. It asks first ("can't be undone"), shows progress ("Optimizing photos… 12 of 140"), then reports the number of photos and space saved, or "Your photos are already optimized." Photos already optimized and lightweight copies (no full photo) are skipped. Files' "last changed" dates are not changed.
+- **Edge cases:** a photo whose smaller copy wouldn't actually be smaller is left as is.
+
 ### 7. Non-Functional Requirements
 - **Performance expectations:** File List scrolls smoothly with at least 100 entries; photo import and display stay responsive regardless of source camera's resolution (including large files from non-Apple cameras). The app launches quickly enough to feel instant on supported devices.
 - **Offline behavior:** Adding photos, writing notes, and viewing saved files all work fully offline, since they're stored locally. Two features need a connection: the place-name search on the Photo Location Selection Screen, and converting a dropped pin into a readable place name. A pin can still be dropped with no connection — it just won't show a place name until one is available. Map tiles are cached by the system and mostly tolerate brief connectivity gaps.
@@ -346,17 +351,17 @@
 
 ### 8. Testing Expectations
 
-**Unit tests required for:**
+**Unit tests (all written and passing, 2026-11-05 — Swift Testing, target NatureIllustrationLogTests, run with ⌘U on an iPhone Simulator, each test on its own in-memory database):**
 - Creating and saving a subject file stores the name, notes, location, and its photos with their dates.
 - Files with missing date or location save and reload correctly.
 - File List sorts names alphabetically.
 - Deleting a file removes it, and its photos, from the store.
 - An album returns its photos in order, and Set as First changes which photo is first.
 - Home background save returns a filename and the image loads back from it.
-- (Planned) A file exported and imported again keeps its hidden ID, name, notes, location, photos, dates, and order.
-- (Planned) The suggested conflict name skips names already taken ("(2)", "(3)", ...).
-- (Planned) Update moves the older version to Recently Replaced, and versions older than 30 days are removed.
-- (Planned) Offloading removes full-size photos and keeps thumbnails, notes, dates, and location.
+- A file exported and imported again keeps its hidden ID, name, notes, location, photos, dates, and order.
+- The suggested conflict name skips names already taken ("(2)", "(3)", ...).
+- Update moves the older version to Recently Replaced, and versions older than 30 days are removed.
+- Offloading removes full-size photos and keeps thumbnails, notes, dates, and location.
 
 **Manual QA checklist**
 

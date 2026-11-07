@@ -1361,6 +1361,86 @@
           }
         }
       }
+    },
+    "Optimize Photo Storage": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Optimizar almacenamiento de fotos"
+          }
+        }
+      }
+    },
+    "Optimize Photo Storage?": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "¿Optimizar almacenamiento de fotos?"
+          }
+        }
+      }
+    },
+    "Optimize": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Optimizar"
+          }
+        }
+      }
+    },
+    "Photos already in the app are resized to at most 4096 pixels on the longest side and saved in a smaller format. This saves space on this device but can't be undone. The originals in your Photos library are not affected.": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Las fotos que ya están en la app se reducen a un máximo de 4096 píxeles en el lado más largo y se guardan en un formato más pequeño. Esto ahorra espacio en este dispositivo, pero no se puede deshacer. Los originales de tu fototeca no se ven afectados."
+          }
+        }
+      }
+    },
+    "Photo Storage Optimized": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Almacenamiento de fotos optimizado"
+          }
+        }
+      }
+    },
+    "Optimizing photos… %lld of %lld": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Optimizando fotos… %1$lld de %2$lld"
+          }
+        }
+      }
+    },
+    "%lld photos were optimized, saving %@.": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Se optimizaron %1$lld fotos y se ahorraron %2$@."
+          }
+        }
+      }
+    },
+    "Your photos are already optimized.": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tus fotos ya están optimizadas."
+          }
+        }
+      }
     }
   },
   "version": "1.0"

@@ -3,7 +3,7 @@ import ImageIO
 import UIKit
 
 /// Turns image files chosen with "Files" into album photos, the same way the
-/// Photos Library picker does: a full-size JPEG, a small (~400 px) thumbnail,
+/// Photos Library picker does: the stored photo (see PhotoStorage), a small (~400 px) thumbnail,
 /// and the date taken, read from the file's own camera information (EXIF)
 /// when it has one — e.g. Lumix JPEGs. Camera RAW files are converted to JPEG.
 enum ImageFileLoader {
@@ -34,17 +34,18 @@ enum ImageFileLoader {
               let source = CGImageSourceCreateWithData(data as CFData, nil),
               CGImageSourceGetCount(source) > 0 else { return nil }
 
-        // Full image, turned upright, limited to 8192 px on the long side.
+        // Full image, turned upright, limited to 4096 px on the long side
+        // (see PhotoStorage).
         let options: [CFString: Any] = [
             kCGImageSourceCreateThumbnailFromImageAlways: true,
             kCGImageSourceCreateThumbnailWithTransform: true,
-            kCGImageSourceThumbnailMaxPixelSize: 8192
+            kCGImageSourceThumbnailMaxPixelSize: PhotoStorage.maxPixelSize
         ]
         guard let cgImage = CGImageSourceCreateThumbnailAtIndex(source, 0, options as CFDictionary) else {
             return nil
         }
         let image = UIImage(cgImage: cgImage)
-        guard let full = image.jpegData(compressionQuality: 0.9) else { return nil }
+        guard let full = PhotoStorage.encode(cgImage) else { return nil }
 
         return PickedPhoto(
             data: full,
