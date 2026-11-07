@@ -332,7 +332,7 @@
 **Feature: Photo Sources (built in Step 2b, all devices)**
 - **Expected behavior:** "Add Photos" (Add File, File Screen) and the album's + offer two choices: **Photos Library** (the existing picker, with thumbnails) or **Files** (the system file browser, with thumbnail and preview views; several images can be chosen at once).
 - **Dates:** for photos from Files, the date taken is read from the image file's own camera information (e.g. Lumix JPEGs) when present; otherwise the usual manual date entry applies.
-- **Format:** like Photos Library photos, each is stored as a full-size JPEG (up to 8192 px on the long side) plus a ~400 px thumbnail; camera RAW files are converted to JPEG. Spanish labels: "Fototeca" and "Archivos" (Apple's own names).
+- **Format:** like Photos Library photos, each is stored per *Smaller Stored Photos* (at most 4096 px, HEIC) plus a ~400 px thumbnail; camera RAW files are converted. Spanish labels: "Fototeca" and "Archivos" (Apple's own names).
 - **Edge cases:** a file that isn't a readable image is skipped and the rest are added; the storage space check applies as for the Photos Library.
 
 **Feature: Zoom in Full Photo View (built in Step 2c, all devices)**
@@ -347,7 +347,7 @@
 - **Performance expectations:** File List scrolls smoothly with at least 100 entries; photo import and display stay responsive regardless of source camera's resolution (including large files from non-Apple cameras). The app launches quickly enough to feel instant on supported devices.
 - **Offline behavior:** Adding photos, writing notes, and viewing saved files all work fully offline, since they're stored locally. Two features need a connection: the place-name search on the Photo Location Selection Screen, and converting a dropped pin into a readable place name. A pin can still be dropped with no connection — it just won't show a place name until one is available. Map tiles are cached by the system and mostly tolerate brief connectivity gaps.
 - **Accessibility (VoiceOver, Dynamic Type):** Pending decision in future enhancements.
-- **Localization needs:** The app's own text (button labels, section headers, messages, alerts, and the permission prompts) is available in English and Spanish, and follows the iPhone/iPad's language setting: a device set to Spanish shows Spanish right away, and any other device language shows English. There is no in-app language picker. Dates format automatically for the device's language. User-entered content (file names, notes) is never translated and stays exactly as typed. Additional languages are a future enhancement.
+- **Localization needs (changed 2026-11-06):** **English only for now.** Spanish was removed before the App Store because no fluent speaker was available to review it; it returns in a future update after a native review. The 144 Spanish translations are saved in `NatureIllustrationLog_Handoff/Spanish_Translations_Saved_2026-11-06` (and in Git history). Spanish labels quoted elsewhere in this spec are kept for that future update. *Previous behavior, for reference:* The app's own text (button labels, section headers, messages, alerts, and the permission prompts) is available in English and Spanish, and follows the iPhone/iPad's language setting: a device set to Spanish shows Spanish right away, and any other device language shows English. There is no in-app language picker. Dates format automatically for the device's language. User-entered content (file names, notes) is never translated and stays exactly as typed. Additional languages are a future enhancement.
 
 ### 8. Testing Expectations
 
@@ -409,10 +409,10 @@
 - With access denied, adding a photo still works and nothing crashes.
 
 *Language*
-- With the device set to Spanish, all labels, alerts, messages, and permission prompts appear in Spanish, and dates appear in Spanish format.
-- With the device set to English (or any language other than Spanish), they appear in English.
+- *(Deferred until Spanish returns)* With the device set to Spanish, all labels, alerts, messages, and permission prompts appear in Spanish, and dates appear in Spanish format.
+- With any device language, the app appears in English (Spanish removed for now).
 - File names and notes appear exactly as typed in either language.
-- Spanish text fits on every screen without being cut off, in portrait and landscape.
+- *(Deferred until Spanish returns)* Spanish text fits on every screen without being cut off, in portrait and landscape.
 
 *Settings and buttons (planned)*
 - The gear opens a screen titled "Settings" ("Ajustes" in Spanish) with Change Background and Recently Replaced buttons.
