@@ -22,6 +22,7 @@ struct AlbumView: View {
     @State private var pendingDelete: AlbumPhoto?
     @State private var photoSpaceNeeded: Int64?
     @State private var isPickingFiles = false
+    @State private var isTakingPhoto = false
 
     // Select mode
     @State private var isSelecting = false
@@ -123,6 +124,18 @@ struct AlbumView: View {
             }
             .imageFileImporter(
                 isPresented: $isPickingFiles,
+                onLoading: { isImporting = true },
+                onLoaded: { picked in
+                    isImporting = false
+                    if StorageCheck.hasRoom(forBytes: StorageCheck.bytes(of: picked)) {
+                        file.appendPhotos(picked, kind: kind, in: modelContext)
+                    } else {
+                        photoSpaceNeeded = StorageCheck.bytes(of: picked)
+                    }
+                }
+            )
+            .cameraCapture(
+                isPresented: $isTakingPhoto,
                 onLoading: { isImporting = true },
                 onLoaded: { picked in
                     isImporting = false
@@ -238,9 +251,10 @@ struct AlbumView: View {
         }
     }
 
-    /// "+": Photos Library or Files.
+    /// "+": Take Photo (iPhone/iPad), Photos Library, or Files.
     private var addButton: some View {
         AddPhotosMenu(
+            onTakePhoto: { isTakingPhoto = true },
             onPhotosLibrary: { isPickingPhotos = true },
             onFiles: { isPickingFiles = true }
         ) {

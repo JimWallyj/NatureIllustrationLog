@@ -15,6 +15,10 @@
 			</array>
 		</dict>
 	</array>
+	<key>NSCameraUsageDescription</key>
+	<string>Used to take photos of nature subjects and illustrations and add them to your files.</string>
+	<key>NSPhotoLibraryAddUsageDescription</key>
+	<string>Used to save the full-quality original of each photo you take in this app to your Photos library.</string>
 	<key>UTExportedTypeDeclarations</key>
 	<array>
 		<dict>

@@ -157,7 +157,9 @@
   - Textbox, "Search for a place"
   - iOS map which enables the user to pin their photo location (pinch to zoom, drag to pan)
   - Map and Satellite buttons on the bottom to change the map view
+  - "Current Location" button (Apple's location arrow) in the map's lower-right corner, all devices (added 2026-11-07)
 - **User actions & resulting behavior:**
+  - Current Location arrow: moves the map to where the device is and drops (or moves) the pin there; Done still has to be tapped to keep it. A spinner shows while locating (up to about 10 seconds). If location access is off: "Location access is off. Turn on Location in Settings, or tap the map to drop the pin." If no position is found: "Couldn't find your current location. Tap the map to drop the pin." The hint line under Map/Satellite mentions the arrow.
   - Search textbox: user enters a place name; the map moves to that vicinity (doesn't drop a pin — the user still taps to place it)
   - Tapping the map drops or moves the pin
   - Map and Satellite buttons change the map style
@@ -329,11 +331,22 @@
 - **Menu bar:** File → New File (⌘N) and File → Import Files… (⌘I), plus the standard Mac menus. (The shortcuts also work on an iPad with a keyboard.)
 - **Possible later addition:** dragging image files from Finder onto Add File or an album.
 
-**Feature: Photo Sources (built in Step 2b, all devices)**
-- **Expected behavior:** "Add Photos" (Add File, File Screen) and the album's + offer two choices: **Photos Library** (the existing picker, with thumbnails) or **Files** (the system file browser, with thumbnail and preview views; several images can be chosen at once).
+**Feature: Photo Sources (built in Step 2b, all devices; Take Photo added in Step 6a)**
+- **Expected behavior:** "Add Photos" (Add File, File Screen) and the album's + offer, in this order: **Take Photo** (iPhone/iPad only; see *Take Photo*), **Photos Library** (the existing picker, with thumbnails), and **Files** (the system file browser, with thumbnail and preview views; several images can be chosen at once). On the Mac the menu shows only Photos Library and Files.
 - **Dates:** for photos from Files, the date taken is read from the image file's own camera information (e.g. Lumix JPEGs) when present; otherwise the usual manual date entry applies.
 - **Format:** like Photos Library photos, each is stored per *Smaller Stored Photos* (at most 4096 px, HEIC) plus a ~400 px thumbnail; camera RAW files are converted. Spanish labels: "Fototeca" and "Archivos" (Apple's own names).
 - **Edge cases:** a file that isn't a readable image is skipped and the rest are added; the storage space check applies as for the Photos Library.
+
+**Feature: Take Photo (Step 6a, added 2026-11-07; iPhone/iPad only)**
+- **Where:** first choice in the "Add Photos" menu in Add File, on the File Screen (subject and illustration photos), and in the album's +. Camera icon. Hidden on the Mac (no Apple camera screen for Mac Catalyst apps, and only a FaceTime camera), in the Simulator, and on any device without a camera. Hidden wherever adding is hidden (read-only files, lightweight copies, Recently Replaced).
+- **Camera screen:** Apple's standard camera (UIImagePickerController): zoom, flash, front/back; Retake / Use Photo. One photo per opening; tap Take Photo again for another. (A camera that reopens automatically, or a custom multi-shot camera, could be added later.)
+- **Stored like any photo:** at most 4096 px, HEIC, with a ~400 px thumbnail (*Smaller Stored Photos*); the storage space check applies; the progress indicator shows while it's prepared. Added to the end of the album (or to Add File's photos).
+- **Date:** the moment the photo was taken; no "Set date" needed.
+- **Original saved to Photos:** the full-quality original is also saved to the Photos library (with iCloud Photos it reaches the Mac too). Uses the "Add Photos Only" permission, asked the first time. If refused, the photo is still added to the app and the Photos copy is skipped, with no message.
+- **Location:** not set automatically. Use the Current Location arrow on the Photo Location screen.
+- **Camera access:** iOS asks the first time Take Photo is tapped (not at launch). If the user taps "Don't Allow" then, nothing more happens. Later taps with access off show "Camera Access Is Off — To take photos in this app, turn on Camera in Settings." with Open Settings / Cancel. If blocked by Screen Time or a profile: "Camera Not Available — The camera is turned off on this device, for example by Screen Time." with OK only. Photos Library and Files keep working.
+- **Permission texts (Info.plist):** NSCameraUsageDescription "Used to take photos of nature subjects and illustrations and add them to your files."; NSPhotoLibraryAddUsageDescription "Used to save the full-quality original of each photo you take in this app to your Photos library."
+- **Edge cases:** Cancel on the camera adds nothing; a photo that can't be prepared is skipped; too little space shows the usual Not Enough Space message and nothing is added.
 
 **Feature: Zoom in Full Photo View (built in Step 2c, all devices)**
 - **Expected behavior:** pinch (trackpad or touch screen) or double-click/double-tap to zoom into a photo, then drag to look around; double-click/double-tap again to return to the full photo. Swiping between photos works when not zoomed in.
@@ -407,6 +420,20 @@
 *Permissions*
 - First launch shows the Photos access prompt.
 - With access denied, adding a photo still works and nothing crashes.
+
+*Take Photo (iPhone; Step 6a)*
+- The Add Photos menu (Add File, File Screen subject and illustration, album +) lists Take Photo, Photos Library, Files; the Mac and the iPad Simulator show only Photos Library and Files.
+- First Take Photo asks for camera access; Allow opens the camera. Retake works; Use Photo adds the photo with today's date, and the progress indicator shows briefly.
+- Add File: the photo appears as a thumbnail with its date; Save works with no "Choose Date".
+- Album and File Screen: the photo is added to the end of the right album (subject or illustration).
+- First Use Photo asks "Add Photos Only"; with Allow, the full-quality photo appears in the Photos app; with Don't Allow, the photo is still added to the app.
+- Cancel on the camera adds nothing.
+- With camera access turned off in Settings, Take Photo shows "Camera Access Is Off" and Open Settings goes to the app's Settings page.
+- Read-only files and lightweight copies show no way to take a photo.
+
+*Photo Location: Current Location arrow*
+- The arrow moves the map to where you are and drops the pin; Done saves it; Cancel doesn't.
+- With location access off, the arrow shows the "Location access is off" message.
 
 *Language*
 - *(Deferred until Spanish returns)* With the device set to Spanish, all labels, alerts, messages, and permission prompts appear in Spanish, and dates appear in Spanish format.

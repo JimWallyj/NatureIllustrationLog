@@ -10,6 +10,8 @@ struct FileDetailView: View {
     @State private var photoSpaceNeeded: Int64?
     @State private var isPickingFiles = false
     @State private var filesKind: AlbumKind = .subject
+    @State private var isTakingPhoto = false
+    @State private var cameraKind: AlbumKind = .subject
     /// Bumped when the album closes so the Mac redraws the top-bar buttons
     /// (after photos are added it otherwise leaves '<' and Home blank until scrolling).
     @State private var toolbarRefresh = 0
@@ -122,6 +124,18 @@ struct FileDetailView: View {
                 }
             }
         )
+        .cameraCapture(
+            isPresented: $isTakingPhoto,
+            onLoading: { isImporting = true },
+            onLoaded: { picked in
+                isImporting = false
+                if StorageCheck.hasRoom(forBytes: StorageCheck.bytes(of: picked)) {
+                    file.appendPhotos(picked, kind: cameraKind, in: modelContext)
+                } else {
+                    photoSpaceNeeded = StorageCheck.bytes(of: picked)
+                }
+            }
+        )
         .notEnoughSpaceForPhotosAlert(bytesNeeded: $photoSpaceNeeded)
         .fullScreenCover(item: $presentedAlbum, onDismiss: { toolbarRefresh += 1 }) { kind in
             AlbumView(file: file, kind: kind, onClose: { presentedAlbum = nil })
@@ -164,6 +178,10 @@ struct FileDetailView: View {
                 .foregroundStyle(.secondary)
         } else {
             AddPhotosMenu(
+                onTakePhoto: {
+                    cameraKind = .subject
+                    isTakingPhoto = true
+                },
                 onPhotosLibrary: { pickerTarget = .subject },
                 onFiles: {
                     filesKind = .subject
@@ -192,6 +210,10 @@ struct FileDetailView: View {
                     .foregroundStyle(.secondary)
             } else {
                 AddPhotosMenu(
+                    onTakePhoto: {
+                        cameraKind = .illustration
+                        isTakingPhoto = true
+                    },
                     onPhotosLibrary: { pickerTarget = .illustration },
                     onFiles: {
                         filesKind = .illustration

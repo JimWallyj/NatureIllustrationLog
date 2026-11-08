@@ -28,6 +28,7 @@ struct AddFileView: View {
     @State private var showingPhotoAccessExplainer = false
     @State private var photoSpaceNeeded: Int64?
     @State private var isPickingFiles = false
+    @State private var isTakingPhoto = false
 
     var body: some View {
         NavigationStack {
@@ -83,6 +84,14 @@ struct AddFileView: View {
             }
             .imageFileImporter(
                 isPresented: $isPickingFiles,
+                onLoading: { isImporting = true },
+                onLoaded: { picked in
+                    isImporting = false
+                    add(picked)
+                }
+            )
+            .cameraCapture(
+                isPresented: $isTakingPhoto,
                 onLoading: { isImporting = true },
                 onLoaded: { picked in
                     isImporting = false
@@ -148,6 +157,7 @@ struct AddFileView: View {
             }
 
             AddPhotosMenu(
+                onTakePhoto: { isTakingPhoto = true },
                 onPhotosLibrary: openPhotoPicker,
                 onFiles: { isPickingFiles = true }
             ) {
@@ -273,7 +283,7 @@ struct AddFileView: View {
 
     // MARK: - Actions
 
-    /// Adds picked photos (from Photos Library or Files), after the space check.
+    /// Adds picked photos (from the camera, Photos Library, or Files), after the space check.
     private func add(_ picked: [PickedPhoto]) {
         let alreadyPicked = StorageCheck.bytes(of: photos)
         if StorageCheck.hasRoom(forBytes: alreadyPicked + StorageCheck.bytes(of: picked)) {

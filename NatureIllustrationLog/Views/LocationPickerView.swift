@@ -3,8 +3,9 @@ import MapKit
 import SwiftUI
 
 /// Asks for "When In Use" location access so the map can show where the
-/// device currently is. Held in @State by the view so the system prompt
-/// isn't torn down while it's showing.
+/// device currently is, and finds the current location for the "Current
+/// Location" button. Held in @State by the view so the system prompt isn't
+/// torn down while it's showing.
 @MainActor
 final class LocationAuthorizer {
     private let manager = CLLocationManager()
@@ -13,6 +14,44 @@ final class LocationAuthorizer {
         if manager.authorizationStatus == .notDetermined {
             manager.requestWhenInUseAuthorization()
         }
+    }
+
+    /// True when location access is turned off for this app (or blocked).
+    var isDenied: Bool {
+        manager.authorizationStatus == .denied || manager.authorizationStatus == .restricted
+    }
+
+    /// The device's current position, or nil if none good enough (within
+    /// about 100 m) arrives within `timeout` — e.g. indoors or under heavy cover.
+    func currentCoordinate(timeout: Duration = .seconds(10)) async -> CLLocationCoordinate2D? {
+        await withTaskGroup(of: CLLocationCoordinate2D?.self) { group in
+            group.addTask {
+                await LocationAuthorizer.firstGoodFix()
+            }
+            group.addTask {
+                try? await Task.sleep(for: timeout)
+                return nil
+            }
+            let result = await group.next() ?? nil
+            group.cancelAll()
+            return result
+        }
+    }
+
+    private static func firstGoodFix() async -> CLLocationCoordinate2D? {
+        do {
+            for try await update in CLLocationUpdate.liveUpdates() {
+                if update.authorizationDenied || update.authorizationDeniedGlobally || update.authorizationRestricted {
+                    return nil
+                }
+                if let location = update.location,
+                   location.horizontalAccuracy >= 0,
+                   location.horizontalAccuracy <= 100 {
+                    return location.coordinate
+                }
+            }
+        } catch {}
+        return nil
     }
 }
 
@@ -33,6 +72,7 @@ struct LocationPickerView: View {
     @State private var searchText = ""
     @State private var searchMessage: String?
     @State private var visibleRegion: MKCoordinateRegion?
+    @State private var isLocating = false
 
     init(initialCoordinate: CLLocationCoordinate2D?, onDone: @escaping (CLLocationCoordinate2D) -> Void) {
         self.onDone = onDone
@@ -65,7 +105,6 @@ struct LocationPickerView: View {
                         : MapStyle.standard(elevation: .realistic)
                 )
                 .mapControls {
-                    MapUserLocationButton()
                     MapCompass()
                     MapScaleView()
                 }
@@ -77,6 +116,10 @@ struct LocationPickerView: View {
                         selection = coordinate
                     }
                 }
+            }
+            .overlay(alignment: .bottomTrailing) {
+                currentLocationButton
+                    .padding(12)
             }
             .onChange(of: searchText) {
                 searchMessage = nil
@@ -98,7 +141,7 @@ struct LocationPickerView: View {
 
                     Group {
                         if selection == nil {
-                            Text("Pinch to zoom, then tap the map to drop a pin on the photo location.")
+                            Text("Pinch to zoom, then tap the map to drop a pin on the photo location, or tap the arrow to use where you are now.")
                         } else {
                             Text("Tap the map again to move the pin.")
                         }
@@ -169,6 +212,52 @@ struct LocationPickerView: View {
         .padding(.horizontal)
         .padding(.vertical, 10)
         .background(.regularMaterial)
+    }
+
+    /// Apple's location arrow, in the map's corner: moves the map to where the
+    /// device is and drops the pin there. Done still has to be tapped to keep it.
+    private var currentLocationButton: some View {
+        Button {
+            Task { await pinCurrentLocation() }
+        } label: {
+            Group {
+                if isLocating {
+                    ProgressView()
+                } else {
+                    Image(systemName: "location.fill")
+                        .font(.title3)
+                }
+            }
+            .frame(width: 44, height: 44)
+            .background(.regularMaterial, in: RoundedRectangle(cornerRadius: 10))
+        }
+        .buttonStyle(.plain)
+        .foregroundStyle(Color.accentColor)
+        .disabled(isLocating)
+        .accessibilityLabel("Current Location")
+    }
+
+    private func pinCurrentLocation() async {
+        searchMessage = nil
+        if authorizer.isDenied {
+            searchMessage = String(localized: "Location access is off. Turn on Location in Settings, or tap the map to drop the pin.")
+            return
+        }
+        authorizer.requestIfNeeded()
+        isLocating = true
+        let coordinate = await authorizer.currentCoordinate()
+        isLocating = false
+        if let coordinate {
+            selection = coordinate
+            position = .region(
+                MKCoordinateRegion(
+                    center: coordinate,
+                    span: MKCoordinateSpan(latitudeDelta: 0.005, longitudeDelta: 0.005)
+                )
+            )
+        } else {
+            searchMessage = String(localized: "Couldn't find your current location. Tap the map to drop the pin.")
+        }
     }
 
     /// Looks up the typed place name (biased toward the area currently on

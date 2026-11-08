@@ -162,15 +162,24 @@ enum SystemSettingsLink {
     }
 }
 
-/// The "Add Photos" choices: Photos Library (the photo picker) or Files
-/// (image files from iCloud Drive, Downloads, On My iPhone, or Mac folders).
+/// The "Add Photos" choices: Take Photo (the camera; iPhone/iPad only),
+/// Photos Library (the photo picker), or Files (image files from iCloud
+/// Drive, Downloads, On My iPhone, or Mac folders).
 struct AddPhotosMenu<MenuLabel: View>: View {
+    let onTakePhoto: () -> Void
     let onPhotosLibrary: () -> Void
     let onFiles: () -> Void
     @ViewBuilder let label: MenuLabel
 
     var body: some View {
         Menu {
+            if CameraCapture.isAvailable {
+                Button {
+                    onTakePhoto()
+                } label: {
+                    Label("Take Photo", systemImage: "camera")
+                }
+            }
             Button {
                 onPhotosLibrary()
             } label: {
