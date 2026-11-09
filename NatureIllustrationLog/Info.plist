@@ -17,6 +17,8 @@
 	</array>
 	<key>ITSAppUsesNonExemptEncryption</key>
 	<false/>
+	<key>LSApplicationCategoryType</key>
+	<string>public.app-category.graphics-design</string>
 	<key>NSCameraUsageDescription</key>
 	<string>Used to take photos of nature subjects and illustrations and add them to your files.</string>
 	<key>NSPhotoLibraryAddUsageDescription</key>

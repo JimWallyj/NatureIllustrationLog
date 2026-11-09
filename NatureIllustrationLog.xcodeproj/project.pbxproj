@@ -373,9 +373,9 @@
 				ENABLE_USER_SELECTED_FILES = readwrite;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = NatureIllustrationLog/Info.plist;
-				INFOPLIST_KEY_CFBundleDisplayName = NatureIllustrationLog;
-				"INFOPLIST_KEY_CFBundleDisplayName[sdk=iphoneos*]" = NatureIllustrationLog;
-				"INFOPLIST_KEY_CFBundleDisplayName[sdk=iphonesimulator*]" = NatureIllustrationLog;
+				INFOPLIST_KEY_CFBundleDisplayName = "Nature Illustration Log";
+				"INFOPLIST_KEY_CFBundleDisplayName[sdk=iphoneos*]" = "Nature Log";
+				"INFOPLIST_KEY_CFBundleDisplayName[sdk=iphonesimulator*]" = "Nature Log";
 				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "Used to show where you are on the map when you record a photo's location.";
 				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "Used to read the date and location of photos you add to your nature log.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
@@ -390,7 +390,9 @@
 				);
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.walejko.NatureIllustrationLog;
+				PRODUCT_MODULE_NAME = NatureIllustrationLog;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				"PRODUCT_NAME[sdk=macosx*]" = "Nature Illustration Log";
 				STRING_CATALOG_GENERATE_SYMBOLS = YES;
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
 				SUPPORTS_MACCATALYST = YES;
@@ -429,9 +431,9 @@
 				ENABLE_USER_SELECTED_FILES = readwrite;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = NatureIllustrationLog/Info.plist;
-				INFOPLIST_KEY_CFBundleDisplayName = NatureIllustrationLog;
-				"INFOPLIST_KEY_CFBundleDisplayName[sdk=iphoneos*]" = NatureIllustrationLog;
-				"INFOPLIST_KEY_CFBundleDisplayName[sdk=iphonesimulator*]" = NatureIllustrationLog;
+				INFOPLIST_KEY_CFBundleDisplayName = "Nature Illustration Log";
+				"INFOPLIST_KEY_CFBundleDisplayName[sdk=iphoneos*]" = "Nature Log";
+				"INFOPLIST_KEY_CFBundleDisplayName[sdk=iphonesimulator*]" = "Nature Log";
 				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "Used to show where you are on the map when you record a photo's location.";
 				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "Used to read the date and location of photos you add to your nature log.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
@@ -446,7 +448,9 @@
 				);
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.walejko.NatureIllustrationLog;
+				PRODUCT_MODULE_NAME = NatureIllustrationLog;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				"PRODUCT_NAME[sdk=macosx*]" = "Nature Illustration Log";
 				STRING_CATALOG_GENERATE_SYMBOLS = YES;
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
 				SUPPORTS_MACCATALYST = YES;
@@ -480,6 +484,7 @@
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/NatureIllustrationLog.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/NatureIllustrationLog";
+				"TEST_HOST[sdk=macosx*]" = "$(BUILT_PRODUCTS_DIR)/Nature Illustration Log.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/Nature Illustration Log";
 			};
 			name = Debug;
 		};
@@ -502,6 +507,7 @@
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/NatureIllustrationLog.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/NatureIllustrationLog";
+				"TEST_HOST[sdk=macosx*]" = "$(BUILT_PRODUCTS_DIR)/Nature Illustration Log.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/Nature Illustration Log";
 			};
 			name = Release;
 		};

@@ -14,6 +14,8 @@
 - **iOS version floor:** 27.0 (the version the app has been tested on; earlier versions are untested and not supported)
 - **Devices supported:** iPhone 17, iPad (10th generation or later), and Mac (planned) via **Mac Catalyst** — the iPad app adapted as a real Mac app; Apple silicon or Intel, **macOS 27 or later** (Mac Catalyst follows the iOS 27 floor); to be tested on an M4 Mac running macOS 27
 - **Apple Developer account:** Free account for now. A paid account (needed for iCloud sync, TestFlight, and the App Store) will be revisited when it is time to submit to the App Store.
+- **App name (added 2026-11-08):** App Store name "Nature Illustration Log" (planned). Under the icon on iPhone/iPad: "Nature Log" (fits without being cut off). On the Mac (Dock, menu bar, Finder, Applications, window): "Nature Illustration Log".
+- **App Store category (added 2026-11-08):** Graphics & Design (primary), Productivity (secondary).
 - **Orientation support:** Portrait or Landscape
 - **Xcode / Swift version:** Xcode 27.0
 - **Tested on:** iPhone 17 running iOS 27.0.1
