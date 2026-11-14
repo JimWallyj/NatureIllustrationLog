@@ -141,7 +141,7 @@
 
 #### Screen: Settings (formerly "Edit Home")
 - **Entry points:** User clicks the gear sign in the top right corner of the Home screen
-- **Exit points:** '<' icon in the top left corner returns to the previous screen; (planned) Recently Replaced button opens the Recently Replaced screen
+- **Exit points:** '<' icon in the top left corner returns to the previous screen; (planned) Recently Replaced button opens the Recently Replaced screen; "Help" at the top right (added 2026-11-10, all devices) is a menu with one item, "Nature Illustration Log Help", which opens the support page (https://jimwallyj.github.io/nature-illustration-log/support.html) in the browser. On the Mac the menu bar's Help menu has the same item (⌘?). The support page links to the User Manual (PDF).
 - **Title:** "Settings" (Spanish: "Ajustes")
 - **UI elements:** All buttons use the app's raised button style (see Section 9) in forest green. Order, top to bottom: Import Files, Recently Replaced, Change Background.
   - a. "Change Background" button. This takes the user to the Photos app to select a background photo, which becomes the new Home screen background. The previous background image is deleted from storage when replaced.

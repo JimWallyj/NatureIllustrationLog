@@ -88,6 +88,17 @@ struct EditHomeView: View {
                         Image(systemName: "chevron.left")
                     }
                 }
+                // "Help" at the top right: a menu with the support page
+                // (same item as the Mac's Help menu).
+                ToolbarItem(placement: .topBarTrailing) {
+                    Menu("Help") {
+                        Button {
+                            SupportLinks.openHelp()
+                        } label: {
+                            Label("Nature Illustration Log Help", systemImage: "questionmark.circle")
+                        }
+                    }
+                }
             }
             .sheet(isPresented: $isPickingPhoto) {
                 PhotoAssetPicker(

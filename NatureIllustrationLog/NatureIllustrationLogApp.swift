@@ -24,6 +24,13 @@ struct NatureIllustrationLogApp: App {
                 }
                 .keyboardShortcut("i")
             }
+            // Mac menu bar Help menu: opens the support page (⌘?).
+            CommandGroup(replacing: .help) {
+                Button("Nature Illustration Log Help") {
+                    SupportLinks.openHelp()
+                }
+                .keyboardShortcut("?")
+            }
         }
     }
 }
